@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up cmake
-        run: apt-get install -y cmake
+        run: sudo apt-get install -y cmake
       - name: Set up build directory
         run: mkdir build && cd build
       - name: Build
