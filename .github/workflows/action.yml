@@ -10,6 +10,6 @@ jobs:
       - name: Set up build directory
         run: mkdir build && cd build
       - name: Build
-        run: cmake ..
+        run: cmake .
       - name: Make
         run: make
