@@ -3,13 +3,13 @@ on: [push]
 jobs:
   test_build:
     runs-on: ubuntu-latest
-    uses: actions/checkout@v2
     steps:
+      - uses: actions/checkout@v2
       - name: Set up cmake
-      - run: apt-get install -y cmake
+        run: apt-get install -y cmake
       - name: Set up build directory
-      - run: mkdir build && cd build
+        run: mkdir build && cd build
       - name: Build
-      - run: cmake ..
+        run: cmake ..
       - name: Make
-      - run: make
+        run: make
