@@ -1,3 +1,0 @@
-/home/alissa/Documentos/dev/UNI/LP1/TrabalhoBaseDefense/cmake-build-debug/_deps/sfml-subbuild/CMakeFiles/sfml-populate.dir
-/home/alissa/Documentos/dev/UNI/LP1/TrabalhoBaseDefense/cmake-build-debug/_deps/sfml-subbuild/CMakeFiles/edit_cache.dir
-/home/alissa/Documentos/dev/UNI/LP1/TrabalhoBaseDefense/cmake-build-debug/_deps/sfml-subbuild/CMakeFiles/rebuild_cache.dir
