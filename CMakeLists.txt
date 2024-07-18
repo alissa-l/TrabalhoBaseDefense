@@ -17,6 +17,8 @@ add_executable(TrabalhoBaseDefense TrabalhoBaseDefense/TrabalhoBaseDefense.cpp
 target_link_libraries(TrabalhoBaseDefense PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefense PRIVATE cxx_std_17)
 
+file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})
+
 if(WIN32)
     add_custom_command(
             TARGET TrabalhoBaseDefense
