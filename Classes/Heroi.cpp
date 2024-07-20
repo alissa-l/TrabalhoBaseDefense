@@ -28,3 +28,19 @@ void Heroi::move(int posX, int posY) {
     this->posY = posY;
 }
 
+int Heroi::getPosX() const {
+    return this->posX;
+}
+
+int Heroi::getPosY() const {
+    return this->posY;
+}
+
+void Heroi::setPosX(int posX) {
+    this->posX = posX;
+}
+
+void Heroi::setPosY(int posY) {
+    this->posY = posY;
+}
+

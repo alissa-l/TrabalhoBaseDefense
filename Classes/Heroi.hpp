@@ -11,10 +11,14 @@ private:
     int posY;
 public:
     Heroi();
-    void setVida(int vida);
-    void setMunicao(int municao);
     int getVida() const;
+    void setVida(int vida);
     int getMunicao() const;
+    void setMunicao(int municao);
+    int getPosX() const;
+    void setPosX(int posX);
+    int getPosY() const;
+    void setPosY(int posY);
     void move(int posX, int posY);
 
 };
