@@ -13,6 +13,10 @@ FetchContent_MakeAvailable(SFML)
 add_executable(TrabalhoBaseDefense TrabalhoBaseDefense/TrabalhoBaseDefense.cpp
         Classes/Heroi.cpp
         Classes/Heroi.hpp
+        Utils/VectorUtils.cpp
+        Utils/VectorUtils.hpp
+        Utils/DrawUtils.cpp
+        Utils/DrawUtils.hpp
 )
 target_link_libraries(TrabalhoBaseDefense PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefense PRIVATE cxx_std_17)
