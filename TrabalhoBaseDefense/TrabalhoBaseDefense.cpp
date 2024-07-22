@@ -26,6 +26,7 @@ float projectileSpeed = 10.0f;
 
 // Relógio
 sf::Clock m_clock;
+int frame_count = 0;
 
 // Mouse
 sf::Vector2f heroMousePos;
@@ -65,6 +66,12 @@ int main() {
             }
 
         }
+        frame_count++;
+
+        if(frame_count % 60 == 0) {
+            // LOGICA DE INIMIGO
+        }
+
         window.clear(sf::Color::White);
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
@@ -83,6 +90,14 @@ int main() {
         for (int(i) = 0; i < projeteis.size(); i++) {
             window.draw(projeteis[i].getProjetil());
         }
+
+        sf::RectangleShape base = sf::RectangleShape(sf::Vector2f(400, 300));
+        base.setOutlineThickness(5);
+        base.setFillColor(sf::Color::Transparent);
+        base.setOutlineColor(sf::Color::Black);
+        base.setPosition(440, 210);
+
+        window.draw(base);
 
         std::string vida = "Vida: " + std::to_string(heroi.getVida());
         DrawUtils::createText(vida, 1100, 20, window);
