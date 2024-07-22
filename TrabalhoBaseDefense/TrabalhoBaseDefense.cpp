@@ -4,6 +4,7 @@
 #include "math.h"
 #include "../Utils/VectorUtils.hpp"
 #include "../Utils/DrawUtils.hpp"
+#include "../Classes/Projetil.hpp"
 
 // Metódo de atualização
 void update(sf::RenderWindow &window);
@@ -20,19 +21,24 @@ Heroi heroi;
 sf::RectangleShape heroiShape;
 
 // Projeteis
-std::vector<sf::RectangleShape> projeteis;
-std::vector<sf::Vector2f> direcoes;
+std::vector<Projetil> projeteis;
 float projectileSpeed = 10.0f;
 
 // Relógio
 sf::Clock m_clock;
 
 // Mouse
-sf::Vector2f mousePos;
-sf::Vector2f lastMousePos;
+sf::Vector2f heroMousePos;
+sf::Vector2f projMousePos;
 
-int main()
-{
+bool move = false;
+bool shoot = false;
+
+
+void moveHero(sf::RenderWindow &window);
+void calcShoot(sf::RenderWindow &window);
+
+int main() {
     // Janela
     sf::RenderWindow window(sf::VideoMode(tamX, tamY), "Base Defense");
     window.setFramerateLimit(frameRate);
@@ -40,56 +46,42 @@ int main()
     //Variáveis
     heroiShape = DrawUtils::desenharHeroi(heroi);
 
-    mousePos = heroiShape.getPosition();
+    heroMousePos = heroiShape.getPosition();
 
     // Game loop
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if(heroi.getMunicao() > 0) {
+                        heroi.setMunicao(heroi.getMunicao() - 1);
+                        shoot = true;
+                    }
+                }
+            }
 
         }
         window.clear(sf::Color::White);
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
-            lastMousePos = mousePos;
-            mousePos = sf::Vector2f(sf::Mouse::getPosition(window));
+            move = true;
+            heroMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
 
         }
 
-        sf::Vector2f destino = sf::Vector2f(mousePos);
-        sf::Vector2f direcao = VectorUtils::calcularDirecao(heroiShape.getPosition(), destino);
+        // UPDATE
+        update(window);
 
-        float distance = sqrt(pow(destino.x - heroiShape.getPosition().x, 2) + pow(destino.y - heroiShape.getPosition().y, 2));
-
-
-        if (distance > 3.0f) {
-            heroiShape.setPosition(heroiShape.getPosition() + direcao * 5.0f);
-        }
-
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            for(int i = 0; i<1; i++) {
-                projeteis.push_back(sf::RectangleShape(sf::Vector2f(10, 10)));
-                projeteis.back().setFillColor(sf::Color::Blue);
-                projeteis.back().setPosition(heroiShape.getPosition());
-                direcoes.push_back(VectorUtils::calcularDirecao(heroiShape.getPosition(), mousePos));
-            }
-        }
-
-        if (!projeteis.empty() && !direcoes.empty()) {
-            for (int i = 0; i < projeteis.size(); i++) {
-                projeteis[i].setPosition(projeteis[i].getPosition() + direcoes[i] * projectileSpeed);
-            }
-
-        }
-
+        // DRAW
         window.draw(heroiShape);
 
-        for(auto &proj : projeteis) {
-            window.draw(proj);
+        for (int(i) = 0; i < projeteis.size(); i++) {
+            window.draw(projeteis[i].getProjetil());
         }
 
         std::string vida = "Vida: " + std::to_string(heroi.getVida());
@@ -107,5 +99,51 @@ int main()
 
 void update(sf::RenderWindow &window) {
 
+    moveHero(window);
+    calcShoot(window);
 
+}
+
+void calcShoot(sf::RenderWindow &window) {
+    if (shoot) {
+        projMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
+
+        sf::Vector2f direcao = VectorUtils::calcularDirecao(heroiShape.getPosition(), projMousePos);
+
+        sf::RectangleShape proj = sf::RectangleShape(sf::Vector2f(10, 10));
+        proj.setFillColor(sf::Color::Blue);
+        proj.setPosition(sf::Vector2f(heroiShape.getPosition().x + 20, heroiShape.getPosition().y + 20));
+
+        projeteis.emplace_back(direcao, proj);
+
+        shoot = false;
+    }
+
+    for (int(i) = 0; i < projeteis.size(); i++) {
+        sf::RectangleShape newProj = projeteis[i].getProjetil();
+        newProj.setPosition(newProj.getPosition() + (projeteis[i].getDirecao() * projectileSpeed));
+        projeteis[i].setProjetil(newProj);
+
+        if (newProj.getPosition().x < 0 || newProj.getPosition().x > tamX || newProj.getPosition().y < 0 ||
+            newProj.getPosition().y > tamY) {
+            std::cout << "Removendo projétil" << std::endl;
+            projeteis.erase(projeteis.begin() + i);
+        }
+    }
+}
+
+void moveHero(sf::RenderWindow &window) {
+    sf::Vector2f destino = sf::Vector2f(heroMousePos);
+    sf::Vector2f direcao = VectorUtils::calcularDirecao(heroiShape.getPosition(), destino);
+
+    float distance = sqrt(
+            pow(destino.x - heroiShape.getPosition().x, 2) + pow(destino.y - heroiShape.getPosition().y, 2));
+
+    if (distance < 3.0f) {
+        move = false;
+    }
+
+    if (move) {
+        heroiShape.setPosition(heroiShape.getPosition() + direcao * 5.0f);
+    }
 }

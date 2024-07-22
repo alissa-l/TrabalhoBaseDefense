@@ -17,6 +17,8 @@ add_executable(TrabalhoBaseDefense TrabalhoBaseDefense/TrabalhoBaseDefense.cpp
         Utils/VectorUtils.hpp
         Utils/DrawUtils.cpp
         Utils/DrawUtils.hpp
+        Classes/Projetil.cpp
+        Classes/Projetil.hpp
 )
 target_link_libraries(TrabalhoBaseDefense PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefense PRIVATE cxx_std_17)
