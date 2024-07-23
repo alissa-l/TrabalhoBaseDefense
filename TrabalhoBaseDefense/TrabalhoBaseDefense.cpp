@@ -44,6 +44,12 @@ bool shoot = false;
 void moveHero(sf::RenderWindow &window);
 void calcShoot(sf::RenderWindow &window);
 
+void spawnInimigo();
+
+void calcKill();
+
+void calcDano();
+
 int main() {
     // Janela
     sf::RenderWindow window(sf::VideoMode(tamX, tamY), "Base Defense");
@@ -75,23 +81,6 @@ int main() {
 
 
         frame_count++;
-
-        if(frame_count % 120 == 0) {
-            sf::RectangleShape inimigoShape = sf::RectangleShape(sf::Vector2f(50, 50));
-            int x = rand() % tamX;
-            int y = rand() % tamY;
-            inimigoShape.setPosition(x, y);
-            inimigoShape.setFillColor(sf::Color::Red);
-            Inimigo inimigo = Inimigo(inimigoShape, 100);
-            inimigos.push_back(inimigo);
-        }
-
-        for(int i = 0; i < inimigos.size(); i++) {
-            sf::RectangleShape inimigoShape = inimigos[i].getInimigoShape();
-            sf::Vector2f direcao = VectorUtils::calcularDirecao(inimigoShape.getPosition(), heroiShape.getPosition());
-            inimigoShape.setPosition(inimigoShape.getPosition() + direcao * inimigoSpeed);
-            inimigos[i].setInimigoShape(inimigoShape);
-        }
 
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
@@ -141,9 +130,39 @@ void update(sf::RenderWindow &window) {
 
     moveHero(window);
     calcShoot(window);
+    spawnInimigo();
+    calcKill();
+    calcDano();
 
 }
 
+void calcDano() {
+    for(int i = 0; i < inimigos.size(); i++) {
+        if(inimigos[i].getInimigoShape().getGlobalBounds().intersects(heroiShape.getGlobalBounds())) {
+            heroi.setVida(heroi.getVida() - 10);
+        }
+    }
+
+}
+
+// Vê se algum projétil acertou um inimigo
+void calcKill() {
+
+    for(int i = 0; i < projeteis.size(); i++) {
+        for(int j = 0; j < inimigos.size(); j++) {
+            if(projeteis[i].getProjetil().getGlobalBounds().intersects(inimigos[j].getInimigoShape().getGlobalBounds())) {
+                projeteis.erase(projeteis.begin() + i);
+                inimigos[j].setVida(inimigos[j].getVida() - 100);
+                if(inimigos[j].getVida() <= 0) {
+                    inimigos.erase(inimigos.begin() + j);
+                }
+            }
+        }
+    }
+
+}
+
+// Lógica de cálculo de tiro
 void calcShoot(sf::RenderWindow &window) {
     if (shoot) {
         projMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
@@ -172,10 +191,12 @@ void calcShoot(sf::RenderWindow &window) {
     }
 }
 
+// Lógica de movimentação do herói
 void moveHero(sf::RenderWindow &window) {
     sf::Vector2f destino = sf::Vector2f(heroMousePos);
     sf::Vector2f direcao = VectorUtils::calcularDirecao(heroiShape.getPosition(), destino);
 
+    // Calcula a distância entre o herói e o destino - Sem isso ele fica bugado
     float distance = sqrt(
             pow(destino.x - heroiShape.getPosition().x, 2) + pow(destino.y - heroiShape.getPosition().y, 2));
 
@@ -185,5 +206,42 @@ void moveHero(sf::RenderWindow &window) {
 
     if (move) {
         heroiShape.setPosition(heroiShape.getPosition() + direcao * 5.0f);
+    }
+}
+
+// Cuida da lógica de spawn e movimento dos inimigos
+void spawnInimigo() {
+    if(frame_count % 120 == 0) {
+        sf::RectangleShape inimigoShape = sf::RectangleShape(sf::Vector2f(50, 50));
+
+        int x;
+        int y;
+
+        // Selecao aleatoria do lado de spawn
+        if (rand() % 2 == 0) {
+            x = 0;
+            y = rand() % (tamY - 1) + 1;
+        } else {
+            y = 0;
+            x = rand() % (tamX - 1) + 1;
+        }
+
+        inimigoShape.setPosition(x, y);
+        inimigoShape.setFillColor(sf::Color::Red);
+        Inimigo inimigo = Inimigo(inimigoShape, 100);
+        inimigos.push_back(inimigo);
+    }
+
+    for(int i = 0; i < inimigos.size(); i++) {
+        sf::RectangleShape inimigoShape = inimigos[i].getInimigoShape();
+        sf::Vector2f direcao = VectorUtils::calcularDirecao(inimigoShape.getPosition(), heroiShape.getPosition());
+        inimigoShape.setPosition(inimigoShape.getPosition() + direcao * inimigoSpeed);
+
+        if(inimigoShape.getGlobalBounds().intersects(heroiShape.getGlobalBounds())) {
+            continue;
+        } else {
+            inimigos[i].setInimigoShape(inimigoShape);
+        }
+
     }
 }
