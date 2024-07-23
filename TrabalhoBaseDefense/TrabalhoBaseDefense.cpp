@@ -5,6 +5,7 @@
 #include "../Utils/VectorUtils.hpp"
 #include "../Utils/DrawUtils.hpp"
 #include "../Classes/Projetil.hpp"
+#include "../Classes/Inimigo.hpp"
 
 // Metódo de atualização
 void update(sf::RenderWindow &window);
@@ -19,6 +20,10 @@ Heroi heroi;
 
 // Shape do herói
 sf::RectangleShape heroiShape;
+
+// Inimigos
+std::vector<Inimigo> inimigos;
+float inimigoSpeed = 2.0f;
 
 // Projeteis
 std::vector<Projetil> projeteis;
@@ -66,13 +71,28 @@ int main() {
             }
 
         }
+        window.clear(sf::Color::White);
+
+
         frame_count++;
 
-        if(frame_count % 60 == 0) {
-            // LOGICA DE INIMIGO
+        if(frame_count % 120 == 0) {
+            sf::RectangleShape inimigoShape = sf::RectangleShape(sf::Vector2f(50, 50));
+            int x = rand() % tamX;
+            int y = rand() % tamY;
+            inimigoShape.setPosition(x, y);
+            inimigoShape.setFillColor(sf::Color::Red);
+            Inimigo inimigo = Inimigo(inimigoShape, 100);
+            inimigos.push_back(inimigo);
         }
 
-        window.clear(sf::Color::White);
+        for(int i = 0; i < inimigos.size(); i++) {
+            sf::RectangleShape inimigoShape = inimigos[i].getInimigoShape();
+            sf::Vector2f direcao = VectorUtils::calcularDirecao(inimigoShape.getPosition(), heroiShape.getPosition());
+            inimigoShape.setPosition(inimigoShape.getPosition() + direcao * inimigoSpeed);
+            inimigos[i].setInimigoShape(inimigoShape);
+        }
+
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
@@ -89,6 +109,11 @@ int main() {
 
         for (int(i) = 0; i < projeteis.size(); i++) {
             window.draw(projeteis[i].getProjetil());
+        }
+
+        for(int i = 0; i < inimigos.size(); i++) {
+            std::cout << inimigos[i].getInimigoShape().getPosition().x << " " << inimigos[i].getInimigoShape().getPosition().y << std::endl;
+            window.draw(inimigos[i].getInimigoShape());
         }
 
         sf::RectangleShape base = sf::RectangleShape(sf::Vector2f(400, 300));
