@@ -21,6 +21,7 @@ add_executable(TrabalhoBaseDefense TrabalhoBaseDefense/TrabalhoBaseDefense.cpp
         Classes/Projetil.hpp
         Classes/Inimigo.cpp
         Classes/Inimigo.hpp
+        Classes/Variables.hpp
 )
 target_link_libraries(TrabalhoBaseDefense PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefense PRIVATE cxx_std_17)
