@@ -46,10 +46,6 @@ void Heroi::setPosY(int posY) {
     this->posY = posY;
 }
 
-void Heroi::init() {
-
-}
-
 void Heroi::load() {
     sf::Sprite lSprite = sf::Sprite();
     sf::Texture heroiTexture;
@@ -63,7 +59,9 @@ void Heroi::load() {
         std::cout << "Erro ao carregar textura do heroi" << std::endl;
     }
 
-    sprite = lSprite;
+    sprite = sf::RectangleShape(sf::Vector2f(50, 50));
+    sprite.setFillColor(sf::Color::Green);
+    sprite.setPosition(Variables().tamX / 2.0f, Variables().tamY / 2.0f);
 }
 
 void Heroi::update(sf::RenderWindow &window) {

@@ -3,9 +3,10 @@
 
 class Variables {
 public:
-    int tamX = 1280;
-    int tamY = 720;
-    int frameRate = 60;
+    const int tamX = 1280;
+    const int tamY = 720;
+    const int frameRate = 60;
+    const float projectileSpeed = 10.0f;
 
 };
 

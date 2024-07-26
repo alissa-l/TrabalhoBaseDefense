@@ -7,6 +7,9 @@
 #include "../Classes/Projetil.hpp"
 #include "../Classes/Inimigo.hpp"
 #include "../Classes/Variables.hpp"
+#include "../Classes/GameEntity.hpp"
+
+std::vector<GameEntity> gameEntities;
 
 // Metódo de atualização
 void update(sf::RenderWindow &window);
@@ -21,7 +24,7 @@ int inimigo_freq = 360;
 
 // Projeteis
 std::vector<Projetil> projeteis;
-float projectileSpeed = 10.0f;
+float projectileSpeed = Variables().projectileSpeed;
 
 // Relógio
 sf::Clock m_clock;
@@ -31,7 +34,6 @@ int frame_count = 0;
 sf::Vector2f projMousePos;
 
 bool shoot = false;
-
 
 void calcShoot(sf::RenderWindow &window);
 
@@ -47,6 +49,7 @@ int main() {
     // Janela
     sf::RenderWindow window(sf::VideoMode(Variables().tamX, Variables().tamY), "Base Defense");
     window.setFramerateLimit(Variables().frameRate);
+
     heroi.load();
 
     // Game loop
@@ -110,6 +113,11 @@ void draws(sf::RenderWindow &window) {
     DrawUtils::createText(municao, 1100, 50, window);
 }
 
+/**
+ * Atualiza o jogo
+ * Chama as funcoes de atualizacao do heroi, projeteis, inimigos e colisoes
+ * @param window
+ */
 void update(sf::RenderWindow &window) {
 
     heroi.update(window);
@@ -135,7 +143,10 @@ void calcKill() {
     for(int i = 0; i < projeteis.size(); i++) {
         for(int j = 0; j < inimigos.size(); j++) {
             float distance = sqrt(pow(projeteis[i].getProjetil().getPosition().x - inimigos[j].getInimigoShape().getPosition().x, 2) + pow(projeteis[i].getProjetil().getPosition().y - inimigos[j].getInimigoShape().getPosition().y, 2));
-            if(distance < 25) {
+
+            // x
+
+            if(projeteis[i].getProjetil().getGlobalBounds().intersects(inimigos[j].getInimigoShape().getGlobalBounds())) {
                 projeteis.erase(projeteis.begin() + i);
                 inimigos[j].setVida(inimigos[j].getVida() - 100);
                 if(inimigos[j].getVida() <= 0) {

@@ -1,24 +1,38 @@
-//
-// Created by alissa on 22/07/24.
-//
-
 #ifndef TRABALHOBASEDEFENSE_INIMIGO_HPP
 #define TRABALHOBASEDEFENSE_INIMIGO_HPP
 
 
 #include "SFML/Graphics/RectangleShape.hpp"
+#include "GameEntity.hpp"
 
-class Inimigo {
+class Inimigo : public GameEntity {
 private:
     sf::RectangleShape inimigoShape;
     int vida;
 public:
-    Inimigo(sf::RectangleShape shape, int v);
-    sf::RectangleShape getInimigoShape();
+    int getVida() const;
 
-    void setInimigoShape(sf::RectangleShape inimigo);
-    int getVida();
     void setVida(int vida);
+
+    int getVelocidade() const;
+
+    void setVelocidade(int velocidade);
+
+    int getDano() const;
+
+    void setDano(int dano);
+
+private:
+    int velocidade;
+    int dano;
+public:
+    Inimigo(sf::RectangleShape shape, int vida, int velocidade, int dano);
+
+
+
+    void load();
+    void draw(sf::RenderWindow &window);
+    void update();
 };
 
 

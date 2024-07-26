@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/RectangleShape.hpp"
 
 class Heroi {
 
@@ -15,7 +16,7 @@ private:
     bool move;
     sf::Vector2f heroMousePos;
 public:
-    sf::Sprite sprite;
+    sf::RectangleShape sprite;
 
     Heroi();
     int getVida() const;
@@ -26,11 +27,9 @@ public:
     void setPosX(int posX);
     int getPosY() const;
     void setPosY(int posY);
-    void init();
     void load();
     void update(sf::RenderWindow &window);
     void draw(sf::RenderWindow &window);
-
 };
 
 
