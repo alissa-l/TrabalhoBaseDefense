@@ -8,8 +8,9 @@
 
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
+#include "GameEntity.hpp"
 
-class Projetil {
+class Projetil : public GameEntity {
 private:
     sf::Vector2f direcao;
     sf::RectangleShape projetil;
@@ -19,6 +20,9 @@ public:
     void setProjetil(sf::RectangleShape proj);
     sf::Vector2f getDirecao();
     void setDirecao(sf::Vector2f dir);
+    void load() override;
+    void draw(sf::RenderWindow &window) override;
+    void update() override;
 };
 
 

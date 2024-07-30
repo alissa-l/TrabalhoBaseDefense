@@ -26,3 +26,15 @@ sf::Vector2f Projetil::getDirecao() {
 void Projetil::setDirecao(sf::Vector2f dir) {
     this->direcao = dir;
 }
+
+void Projetil::load() {
+
+}
+
+void Projetil::draw(sf::RenderWindow &window) {
+    window.draw(this->projetil);
+}
+
+void Projetil::update() {
+
+}

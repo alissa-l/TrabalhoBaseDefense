@@ -14,8 +14,6 @@
 
 class DrawUtils {
 public:
-    static sf::RectangleShape desenharHeroi(Heroi &heroi);
-
     static void createText(const std::string &texto, int posX, int posY, sf::RenderWindow &window);
 
 };

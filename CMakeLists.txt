@@ -27,6 +27,7 @@ add_executable(TrabalhoBaseDefense TrabalhoBaseDefense/TrabalhoBaseDefense.cpp
         Classes/Base.cpp
         Classes/Base.hpp
         Classes/GameEntity.hpp
+        Classes/Variables.cpp
 )
 target_link_libraries(TrabalhoBaseDefense PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefense PRIVATE cxx_std_17)

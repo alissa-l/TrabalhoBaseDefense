@@ -7,6 +7,15 @@ Inimigo::Inimigo(sf::RectangleShape shape, int vida, int velocidade, int dano) {
     Inimigo::dano = dano;
 }
 
+const sf::RectangleShape &Inimigo::getInimigoShape() const {
+    return inimigoShape;
+}
+
+void Inimigo::setInimigoShape(const sf::RectangleShape &inimigoSha) {
+    Inimigo::inimigoShape = inimigoSha;
+}
+
+
 int Inimigo::getVida() const {
     return vida;
 }

@@ -12,7 +12,7 @@
 std::vector<GameEntity> gameEntities;
 
 // Metódo de atualização
-void update(sf::RenderWindow &window);
+void update(sf::RenderWindow &t_window);
 
 // Instância do herói
 Heroi heroi;
@@ -35,7 +35,7 @@ sf::Vector2f projMousePos;
 
 bool shoot = false;
 
-void calcShoot(sf::RenderWindow &window);
+void calcShoot(sf::RenderWindow &t_window);
 
 void spawnInimigo();
 
@@ -43,36 +43,32 @@ void calcKill();
 
 void calcDano();
 
-void draws(sf::RenderWindow &window);
+void draws(sf::RenderWindow &t_window);
+sf::RenderWindow window;
+
 
 int main() {
     // Janela
-    sf::RenderWindow window(sf::VideoMode(Variables().tamX, Variables().tamY), "Base Defense");
-    window.setFramerateLimit(Variables().frameRate);
+    window.create(sf::VideoMode(Variables().tamX, Variables().tamY), "Base Defense");
 
+    window.setFramerateLimit(60);
     heroi.load();
+    window.setKeyRepeatEnabled(false);
 
+    std::vector<std::vector<float>> times(5);
     // Game loop
     while (window.isOpen()) {
+        frame_count++;
+
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if(heroi.getMunicao() > 0) {
-                        heroi.setMunicao(heroi.getMunicao() - 1);
-                        shoot = true;
-                    }
-                }
-            }
-
         }
+
         window.clear(sf::Color::White);
 
 
-        frame_count++;
 
         // UPDATE
         update(window);
@@ -82,21 +78,32 @@ int main() {
 
         window.display();
 
+
+
+    }
+
+    for (const auto& x : times) {
+        float avg = 0;
+        for(auto i : x) {
+            avg+=i;
+        }
+        std::cout << avg / x.size() << "\n";
     }
 
     return 0;
 }
 
-void draws(sf::RenderWindow &window) {
-    heroi.draw(window);
+void draws(sf::RenderWindow &t_window) {
+    heroi.draw(t_window);
 
-    for (int(i) = 0; i < projeteis.size(); i++) {
-        window.draw(projeteis[i].getProjetil());
+    for (auto & projetil : projeteis) {
+        projetil.draw(t_window);
     }
 
-    for(int i = 0; i < inimigos.size(); i++) {
-        window.draw(inimigos[i].getInimigoShape());
+    for(const auto & inimigo : inimigos) {
+        t_window.draw(inimigo.getInimigoShape());
     }
+
 
     sf::RectangleShape base = sf::RectangleShape(sf::Vector2f(400, 300));
     base.setOutlineThickness(5);
@@ -104,24 +111,25 @@ void draws(sf::RenderWindow &window) {
     base.setOutlineColor(sf::Color::Black);
     base.setPosition(440, 210);
 
-    window.draw(base);
+    t_window.draw(base);
 
-    std::string vida = "Vida: " + std::to_string(heroi.getVida());
-    DrawUtils::createText(vida, 1100, 20, window);
+//    std::string vida = "Vida: " + std::to_string(heroi.getVida());
+//    DrawUtils::createText(vida, 1100, 20, t_window);
+//
+//    std::string municao = "Municao: " + std::to_string(heroi.getMunicao());
+//    DrawUtils::createText(municao, 1100, 50, t_window);
 
-    std::string municao = "Municao: " + std::to_string(heroi.getMunicao());
-    DrawUtils::createText(municao, 1100, 50, window);
 }
 
 /**
  * Atualiza o jogo
  * Chama as funcoes de atualizacao do heroi, projeteis, inimigos e colisoes
- * @param window
+ * @param t_window
  */
-void update(sf::RenderWindow &window) {
+void update(sf::RenderWindow &t_window) {
 
-    heroi.update(window);
-    calcShoot(window);
+    heroi.update(t_window);
+    calcShoot(t_window);
     spawnInimigo();
     calcKill();
     calcDano();
@@ -142,9 +150,6 @@ void calcKill() {
 
     for(int i = 0; i < projeteis.size(); i++) {
         for(int j = 0; j < inimigos.size(); j++) {
-            float distance = sqrt(pow(projeteis[i].getProjetil().getPosition().x - inimigos[j].getInimigoShape().getPosition().x, 2) + pow(projeteis[i].getProjetil().getPosition().y - inimigos[j].getInimigoShape().getPosition().y, 2));
-
-            // x
 
             if(projeteis[i].getProjetil().getGlobalBounds().intersects(inimigos[j].getInimigoShape().getGlobalBounds())) {
                 projeteis.erase(projeteis.begin() + i);
@@ -159,9 +164,9 @@ void calcKill() {
 }
 
 // Lógica de cálculo de tiro
-void calcShoot(sf::RenderWindow &window) {
+void calcShoot(sf::RenderWindow &t_window) {
     if (shoot) {
-        projMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
+        projMousePos = sf::Vector2f(sf::Mouse::getPosition(t_window));
 
         sf::Vector2f direcao = VectorUtils::calcularDirecao(heroi.sprite.getPosition(), projMousePos);
 
@@ -208,7 +213,7 @@ void spawnInimigo() {
 
         inimigoShape.setPosition(x, y);
         inimigoShape.setFillColor(sf::Color::Red);
-        Inimigo inimigo = Inimigo(inimigoShape, 100);
+        Inimigo inimigo = Inimigo(inimigoShape, 100, 10.0f, 10);
         inimigos.push_back(inimigo);
     }
 

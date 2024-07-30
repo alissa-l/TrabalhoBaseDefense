@@ -8,6 +8,12 @@
 class Inimigo : public GameEntity {
 private:
     sf::RectangleShape inimigoShape;
+public:
+    const sf::RectangleShape &getInimigoShape() const;
+
+    void setInimigoShape(const sf::RectangleShape &inimigoShape);
+
+private:
     int vida;
 public:
     int getVida() const;

@@ -7,19 +7,12 @@
 #include "Variables.hpp"
 
 
-Heroi::Heroi() {
-    this->vida = 100;
-    this->municao = 20;
-    this->posY = 720 - 100;
-    this->posX = 1280 / 2;
+void Heroi::setVida(int v) {
+    this->vida = v;
 }
 
-void Heroi::setVida(int vida) {
-    this->vida = vida;
-}
-
-void Heroi::setMunicao(int municao) {
-    this->municao = municao;
+void Heroi::setMunicao(int m) {
+    this->municao = m;
 }
 
 int Heroi::getVida() const {
@@ -30,45 +23,21 @@ int Heroi::getMunicao() const {
     return this->municao;
 }
 
-int Heroi::getPosX() const {
-    return this->posX;
-}
-
-int Heroi::getPosY() const {
-    return this->posY;
-}
-
-void Heroi::setPosX(int posX) {
-    this->posX = posX;
-}
-
-void Heroi::setPosY(int posY) {
-    this->posY = posY;
-}
-
 void Heroi::load() {
     sf::Sprite lSprite = sf::Sprite();
     sf::Texture heroiTexture;
 
-    if(heroiTexture.loadFromFile("resources/Heroi/handgun/meleeattack/survivor-meleeattack_handgun_0.png")) {
-        std::cout << "Textura do heroi carregada com sucesso" << std::endl;
-        lSprite.setTexture(heroiTexture);
-        lSprite.setPosition(Variables().tamX / 2.0f, Variables().tamY / 2.0f);
-
-    } else {
-        std::cout << "Erro ao carregar textura do heroi" << std::endl;
-    }
-
     sprite = sf::RectangleShape(sf::Vector2f(50, 50));
     sprite.setFillColor(sf::Color::Green);
-    sprite.setPosition(Variables().tamX / 2.0f, Variables().tamY / 2.0f);
+    sprite.setPosition(Variables().tamX / 2.0f,
+                       Variables().tamY / 2.0f);
 }
 
-void Heroi::update(sf::RenderWindow &window) {
+void Heroi::update() {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
         move = true;
-        heroMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
+        heroMousePos = sf::Vector2f(sf::Mouse::getPosition(this->getWindow()));
 
     }
 
@@ -88,7 +57,12 @@ void Heroi::update(sf::RenderWindow &window) {
     }
 }
 
-void Heroi::draw(sf::RenderWindow &window) {
-    window.draw(sprite);
+void Heroi::draw() {
+    this->getWindow().draw(sprite);
 }
+
+void Heroi::shoot() {
+
+}
+
 
