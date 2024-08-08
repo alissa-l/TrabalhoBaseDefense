@@ -1,0 +1,14 @@
+//
+// Created by alissa on 07/08/24.
+//
+
+#ifndef SRC_TRABALHOBASEDEFENSE_ENEMYSPAWN_HPP
+#define SRC_TRABALHOBASEDEFENSE_ENEMYSPAWN_HPP
+
+
+class EnemySpawn {
+
+};
+
+
+#endif //SRC_TRABALHOBASEDEFENSE_ENEMYSPAWN_HPP

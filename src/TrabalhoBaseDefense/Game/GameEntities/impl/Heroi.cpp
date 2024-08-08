@@ -2,9 +2,12 @@
 #include "Heroi.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/Window/Mouse.hpp"
-#include "../Utils/VectorUtils.hpp"
 #include "math.h"
-#include "Variables.hpp"
+#include "../../Variables/Variables.h"
+#include "../../../Util/VectorUtils.hpp"
+#include "../../../Logger/Logger.hpp"
+#include "SFML/Audio/SoundBuffer.hpp"
+#include "SFML/Audio/Sound.hpp"
 
 
 void Heroi::setVida(int v) {
@@ -26,18 +29,23 @@ int Heroi::getMunicao() const {
 void Heroi::load() {
     sf::Sprite lSprite = sf::Sprite();
     sf::Texture heroiTexture;
+    municao = Variables().heroiMunicao;
+
+    Logger logger = Logger(Variables().logFile, Variables().logLevel);
 
     sprite = sf::RectangleShape(sf::Vector2f(50, 50));
     sprite.setFillColor(sf::Color::Green);
     sprite.setPosition(Variables().tamX / 2.0f,
                        Variables().tamY / 2.0f);
+
+
 }
 
-void Heroi::update() {
+void Heroi::update(sf::RenderWindow &window) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 
         move = true;
-        heroMousePos = sf::Vector2f(sf::Mouse::getPosition(this->getWindow()));
+        heroMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
 
     }
 
@@ -53,15 +61,19 @@ void Heroi::update() {
     }
 
     if (move) {
-        sprite.setPosition(sprite.getPosition() + direcao * 5.0f);
+        sprite.setPosition(sprite.getPosition() + direcao * Variables().heroiSpeed);
     }
 }
 
-void Heroi::draw() {
-    this->getWindow().draw(sprite);
+void Heroi::draw(sf::RenderWindow &window) {
+    window.draw(sprite);
 }
 
 void Heroi::shoot() {
+
+}
+
+Heroi::Heroi() {
 
 }
 

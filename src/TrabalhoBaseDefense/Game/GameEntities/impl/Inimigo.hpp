@@ -3,36 +3,35 @@
 
 
 #include "SFML/Graphics/RectangleShape.hpp"
-#include "GameEntity.hpp"
+#include "../GameEntity.h"
 
 class Inimigo : public GameEntity {
 private:
     sf::RectangleShape inimigoShape;
+    int vida;
+    float velocidade;
+    int dano;
+
 public:
+    Inimigo(sf::RectangleShape shape, int vida, int velocidade, int dano);
+
+
     const sf::RectangleShape &getInimigoShape() const;
 
     void setInimigoShape(const sf::RectangleShape &inimigoShape);
 
-private:
-    int vida;
-public:
     int getVida() const;
 
     void setVida(int vida);
 
-    int getVelocidade() const;
+    float getVelocidade() const;
 
-    void setVelocidade(int velocidade);
+    void setVelocidade(float velocidade);
 
     int getDano() const;
 
     void setDano(int dano);
 
-private:
-    int velocidade;
-    int dano;
-public:
-    Inimigo(sf::RectangleShape shape, int vida, int velocidade, int dano);
 
 
 

@@ -4,13 +4,14 @@
 
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
-#include "GameEntity.hpp"
+#include "../GameEntity.h"
 
 class Base : public GameEntity {
 private:
     sf::RectangleShape base;
     int vida{};
 public:
+    Base();
     const sf::RectangleShape &getBase() const;
 
     void setBase(const sf::RectangleShape &base);

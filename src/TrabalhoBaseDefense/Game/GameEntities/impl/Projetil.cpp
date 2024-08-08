@@ -3,12 +3,12 @@
 //
 
 #include "Projetil.hpp"
+#include "../../Variables/Variables.h"
 
 #include <utility>
+#include <iostream>
 
-Projetil::Projetil(sf::Vector2f dir, sf::RectangleShape proj) {
-    this->direcao = dir;
-    this->projetil = proj;
+Projetil::Projetil() {
 }
 
 sf::RectangleShape Projetil::getProjetil() {
@@ -37,4 +37,17 @@ void Projetil::draw(sf::RenderWindow &window) {
 
 void Projetil::update() {
 
+    sf::RectangleShape newProj = projetil;
+    newProj = move(newProj);
+
+
+    projetil.setPosition(newProj.getPosition());
+
+}
+
+sf::RectangleShape Projetil::move(sf::RectangleShape &proj) {
+
+    proj.setPosition(proj.getPosition() + this->direcao * Variables().projectileSpeed);
+
+    return proj;
 }

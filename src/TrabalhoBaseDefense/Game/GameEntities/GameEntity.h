@@ -6,7 +6,7 @@
 
 class GameEntity {
     virtual void load() {}
-    virtual void draw() {}
+    virtual void draw(sf::RenderWindow &window) {}
     virtual void update() {}
 };
 

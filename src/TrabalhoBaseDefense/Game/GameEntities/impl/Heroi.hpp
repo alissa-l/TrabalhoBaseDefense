@@ -5,23 +5,22 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
-#include "GameEntity.hpp"
+#include "../GameEntity.h"
+#include "SFML/Audio/SoundBuffer.hpp"
+#include "SFML/Audio/Sound.hpp"
 
 class Heroi : public GameEntity {
 
 private:
     int vida;
     int municao;
-    bool move;
+    bool move = false;
     sf::Vector2f heroMousePos;
-    sf::RenderWindow &window;
 public:
     sf::RectangleShape sprite;
 
-    Heroi(sf::RenderWindow &mwindow) : window(mwindow) {};
-    sf::RenderWindow& getWindow() {
-        return window;
-    }
+    Heroi();
+
 
     int getVida() const;
     void setVida(int vida);
@@ -30,8 +29,8 @@ public:
 
 
     void load() override;
-    void update() override;
-    void draw() override;
+    void update(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window) override;
     void shoot();
 };
 

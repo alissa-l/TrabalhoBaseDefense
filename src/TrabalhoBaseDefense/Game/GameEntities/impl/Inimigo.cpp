@@ -24,11 +24,11 @@ void Inimigo::setVida(int vid) {
     Inimigo::vida = vid;
 }
 
-int Inimigo::getVelocidade() const {
+float Inimigo::getVelocidade() const {
     return velocidade;
 }
 
-void Inimigo::setVelocidade(int vel) {
+void Inimigo::setVelocidade(float vel) {
     Inimigo::velocidade = vel;
 }
 
@@ -45,7 +45,7 @@ void Inimigo::load() {
 }
 
 void Inimigo::draw(sf::RenderWindow &window) {
-
+    window.draw(inimigoShape);
 }
 
 void Inimigo::update() {

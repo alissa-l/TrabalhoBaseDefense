@@ -6,6 +6,7 @@ class VectorUtils {
 public:
     static sf::Vector2f Normalizar(sf::Vector2f vector);
     static sf::Vector2f calcularDirecao(sf::Vector2f origem, sf::Vector2f destino);
+    static sf::Vector2f calcularDistancia(sf::Vector2f origem, sf::Vector2f destino);
 };
 
 
