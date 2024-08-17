@@ -1,7 +1,3 @@
-//
-// Created by alissa on 21/07/24.
-//
-
 #include "Projetil.hpp"
 #include "../../Variables/Variables.h"
 
@@ -9,6 +5,7 @@
 #include <iostream>
 
 Projetil::Projetil() {
+    friendly = false;
 }
 
 sf::RectangleShape Projetil::getProjetil() {
@@ -50,4 +47,20 @@ sf::RectangleShape Projetil::move(sf::RectangleShape &proj) {
     proj.setPosition(proj.getPosition() + this->direcao * Variables().projectileSpeed);
 
     return proj;
+}
+
+bool Projetil::getFriendly() {
+    return this->friendly;
+}
+
+void Projetil::setFriendly(bool friendly1) {
+    this->friendly = friendly1;
+}
+
+bool Projetil::getJaColidiu() {
+    return jaColidiu;
+}
+
+void Projetil::setJaColidiu(bool jaColidiu1) {
+    jaColidiu = jaColidiu1;
 }

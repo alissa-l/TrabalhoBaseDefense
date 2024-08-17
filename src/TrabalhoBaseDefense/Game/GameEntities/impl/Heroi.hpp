@@ -16,6 +16,7 @@ private:
     int municao;
     bool move = false;
     sf::Vector2f heroMousePos;
+    sf::RectangleShape colisionBox;
 public:
     sf::RectangleShape sprite;
 
@@ -26,6 +27,8 @@ public:
     void setVida(int vida);
     int getMunicao() const;
     void setMunicao(int municao);
+    sf::RectangleShape getColisionBox() const;
+    void setColisionBox(sf::RectangleShape colisionBox);
 
 
     void load() override;

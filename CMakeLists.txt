@@ -20,10 +20,8 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Projetil.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Projetil.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigo.cpp
-        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigo.hpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigo.h
         src/TrabalhoBaseDefense/Game/Variables/Variables.h
-        src/TrabalhoBaseDefense/Game/GameEntities/impl/Mapa.cpp
-        src/TrabalhoBaseDefense/Game/GameEntities/impl/Mapa.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Base.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Base.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/GameEntity.h
@@ -38,6 +36,21 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Logger/LogLevel.h
         src/TrabalhoBaseDefense/Game/Telas/TextoJogo.cpp
         src/TrabalhoBaseDefense/Game/Telas/TextoJogo.h
+        src/TrabalhoBaseDefense/Game/GameEntities/Actions/Shooting/EnemyShooting.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/Actions/Shooting/EnemyShooting.h
+        src/TrabalhoBaseDefense/Game/Colisoes/Colisoes.cpp
+        src/TrabalhoBaseDefense/Game/Colisoes/Colisoes.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoComum.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoComum.h
+        src/TrabalhoBaseDefense/Game/Variables/EnemyVariables.hpp
+        src/TrabalhoBaseDefense/Game/Variables/HeroVariables.h
+        src/TrabalhoBaseDefense/Game/Variables/WindowConstants.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoRapido.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoRapido.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoFortificado.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoFortificado.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoBoss.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoBoss.h
 )
 target_link_libraries(TrabalhoBaseDefenseEXE PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefenseEXE PRIVATE cxx_std_17)

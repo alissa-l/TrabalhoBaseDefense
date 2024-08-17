@@ -8,6 +8,8 @@
 #include "../../../Logger/Logger.hpp"
 #include "SFML/Audio/SoundBuffer.hpp"
 #include "SFML/Audio/Sound.hpp"
+#include "../../Variables/HeroVariables.h"
+#include "../../Variables/WindowConstants.h"
 
 
 void Heroi::setVida(int v) {
@@ -29,14 +31,21 @@ int Heroi::getMunicao() const {
 void Heroi::load() {
     sf::Sprite lSprite = sf::Sprite();
     sf::Texture heroiTexture;
-    municao = Variables().heroiMunicao;
+
+
+
+    municao = HeroVariables().heroiMunicao;
+    vida = HeroVariables().heroiVida;
 
     Logger logger = Logger(Variables().logFile, Variables().logLevel);
 
     sprite = sf::RectangleShape(sf::Vector2f(50, 50));
     sprite.setFillColor(sf::Color::Green);
-    sprite.setPosition(Variables().tamX / 2.0f,
-                       Variables().tamY / 2.0f);
+    sprite.setPosition(WindowConstants().tamX / 2.0f,
+                       WindowConstants().tamY / 2.0f);
+
+    colisionBox = sf::RectangleShape(sf::Vector2f(50, 50));
+    colisionBox.setPosition(sprite.getPosition());
 
 
 }
@@ -61,7 +70,8 @@ void Heroi::update(sf::RenderWindow &window) {
     }
 
     if (move) {
-        sprite.setPosition(sprite.getPosition() + direcao * Variables().heroiSpeed);
+        sprite.setPosition(sprite.getPosition() + direcao * HeroVariables().heroiSpeed);
+        colisionBox.setPosition(sprite.getPosition());
     }
 }
 
@@ -75,6 +85,14 @@ void Heroi::shoot() {
 
 Heroi::Heroi() {
 
+}
+
+sf::RectangleShape Heroi::getColisionBox() const {
+    return colisionBox;
+}
+
+void Heroi::setColisionBox(sf::RectangleShape colisionBox1) {
+    this->colisionBox = colisionBox1;
 }
 
 

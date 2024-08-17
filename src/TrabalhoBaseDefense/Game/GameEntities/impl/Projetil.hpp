@@ -1,7 +1,3 @@
-//
-// Created by alissa on 21/07/24.
-//
-
 #ifndef TRABALHOBASEDEFENSE_PROJETIL_HPP
 #define TRABALHOBASEDEFENSE_PROJETIL_HPP
 
@@ -12,10 +8,10 @@
 
 class Projetil : public GameEntity {
 private:
-
-
     sf::Vector2f direcao;
     sf::RectangleShape projetil;
+    bool friendly;
+    bool jaColidiu = false;
 public:
     Projetil();
 
@@ -23,6 +19,10 @@ public:
     void setProjetil(sf::RectangleShape proj);
     sf::Vector2f getDirecao();
     void setDirecao(sf::Vector2f dir);
+    bool getFriendly();
+    void setFriendly(bool friendly1);
+    bool getJaColidiu();
+    void setJaColidiu(bool jaColidiu);
     void load() override;
     void draw(sf::RenderWindow &window) override;
     void update() override;

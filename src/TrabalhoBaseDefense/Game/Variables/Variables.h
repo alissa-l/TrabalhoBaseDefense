@@ -1,22 +1,11 @@
 #ifndef TRABALHOBASEDEFENSE_VARIABLES_HPP
 #define TRABALHOBASEDEFENSE_VARIABLES_HPP
 
+/**
+ * Classe que guarda as algumas variáveis globais do jogo
+ */
 class Variables {
 public:
-    /**
-     * Tamanho X da janela
-     */
-    const int tamX = 1280;
-
-    /**
-     * Tamanho Y da janela
-     */
-    const int tamY = 720;
-
-    /**
-     * Framerate
-     */
-    const int frameRate = 60;
 
     /**
      * Velocidade do projétil
@@ -24,36 +13,12 @@ public:
     const float projectileSpeed = 10.0f;
 
     /**
-     * Quantidade de heróis
-     */
-    int heroiAmount = 1;
-
-    /**
-     * Municao do herói
-     */
-    int heroiMunicao = 20;
-
-    /**
-     * Velocidade do herói
-     */
-    float heroiSpeed = 5.0f;
-
-    /**
-     * Frequência de inimigos
-     */
-    const int inimigoFrequency = 60;
-
-    /**
-     * Velocidade do inimigo
-     */
-     const float inimigoSpeed = 2.0f;
-
-    /**
      * Log level
      */
     int logLevel = 5;
 
     std::string logFile = "log.txt";
+
 
     /**
      * Base vida

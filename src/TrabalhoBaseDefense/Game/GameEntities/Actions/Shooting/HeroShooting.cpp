@@ -20,6 +20,7 @@ void HeroShooting::shoot(bool &shoot, Heroi &heroi, std::vector<Projetil> &proje
 
     Projetil proj = Projetil();
 
+    proj.setFriendly(true);
     sf::Vector2f direcaoReal = VectorUtils::calcularDirecao(heroi.sprite.getPosition(), direcao);
 
     proj.setDirecao(direcaoReal);

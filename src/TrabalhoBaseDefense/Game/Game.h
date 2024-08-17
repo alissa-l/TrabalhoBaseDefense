@@ -12,7 +12,9 @@ private:
     void draw(sf::RenderWindow &window);
     void setup();
     void drawText(sf::RenderWindow &window);
-    void spawnInimigo();
+    void setupInimigos();
+    void menuScreen(sf::RenderWindow &window);
+    void gameOverScreen(sf::RenderWindow &window);
 public:
     void run();
 
