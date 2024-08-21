@@ -15,14 +15,16 @@ Inimigo::Inimigo() {
  * @param colisionBoxSize
  */
 Inimigo::Inimigo(sf::RectangleShape shape1, int vida1, float velocidade1, int dano1, sf::Vector2f colisionBoxSize,
-                 std::string nome1) {
+                 std::string nome1, double chanceSpawn1) {
     inimigoShape = shape1;
     Inimigo::vida = vida1;
     Inimigo::velocidade = velocidade1;
     Inimigo::dano = dano1;
     Inimigo::nome = nome1;
+    Inimigo::chanceSpawn = chanceSpawn1;
     colisionBox = sf::RectangleShape(colisionBoxSize);
     colisionBox.setPosition(inimigoShape.getPosition());
+
 }
 
 /**
@@ -46,7 +48,19 @@ void Inimigo::draw(sf::RenderWindow &window) {
  */
 void Inimigo::update() {
 
-    sf::Vector2f newPos = posicao + direcao * velocidade;
+    sf::Vector2f newDirecao = sf::Vector2f(direcao.x, direcao.y);
+
+    if(stopMovingX){
+        newDirecao.x = 0;
+    }
+
+    if(stopMovingY){
+        newDirecao.y = 0;
+    }
+
+    sf::Vector2f newPos = posicao + newDirecao * velocidade;
+
+
 
     setPosicao(newPos);
 
@@ -123,4 +137,32 @@ std::string &Inimigo::getNome() {
 
 void Inimigo::setNome(const std::string &nome1) {
     this->nome = nome1;
+}
+
+double Inimigo::getChanceSpawn() const {
+    return chanceSpawn;
+}
+
+bool Inimigo::isStopMovingX() const {
+    return this->stopMovingX;
+}
+
+void Inimigo::setStopMovingX(bool stopMoving) {
+    this->stopMovingX = stopMoving;
+}
+
+bool Inimigo::isStopMovingY() const {
+    return this->stopMovingY;
+}
+
+void Inimigo::setStopMovingY(bool stopMoving) {
+    this->stopMovingY = stopMoving;
+}
+
+int Inimigo::getLastShot() const {
+    return this->lastShot;
+}
+
+void Inimigo::setLastShot(int lastShot1) {
+    this->lastShot = lastShot1;
 }

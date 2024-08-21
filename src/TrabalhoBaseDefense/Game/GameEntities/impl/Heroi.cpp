@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Heroi.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/Window/Mouse.hpp"
@@ -6,8 +5,6 @@
 #include "../../Variables/Variables.h"
 #include "../../../Util/VectorUtils.hpp"
 #include "../../../Logger/Logger.hpp"
-#include "SFML/Audio/SoundBuffer.hpp"
-#include "SFML/Audio/Sound.hpp"
 #include "../../Variables/HeroVariables.h"
 #include "../../Variables/WindowConstants.h"
 
@@ -51,7 +48,7 @@ void Heroi::load() {
 }
 
 void Heroi::update(sf::RenderWindow &window) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) || sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
         move = true;
         heroMousePos = sf::Vector2f(sf::Mouse::getPosition(window));

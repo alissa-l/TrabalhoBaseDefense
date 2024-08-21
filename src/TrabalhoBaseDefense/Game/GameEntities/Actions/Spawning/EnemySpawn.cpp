@@ -10,15 +10,14 @@
  * @param inimigosSpawn
  * @return
  */
-Inimigo EnemySpawn::getRandomEnemy(std::map<double, Inimigo> &inimigosSpawn) {
+Inimigo EnemySpawn::getRandomEnemy(std::vector<Inimigo> &inimigosSpawn) {
     Inimigo inimigoEscolhido;
     bool inimigoEscolhidoSetado = false;
     while (!inimigoEscolhidoSetado) {
-        for (auto &pair: inimigosSpawn) {
-            double chance = pair.first;
-            Inimigo inimigo = pair.second;
+        for (auto &i: inimigosSpawn) {
+            double chance = i.getChanceSpawn();
             if (chance >= rand() % 100) {
-                inimigoEscolhido = inimigo;
+                inimigoEscolhido = i;
                 inimigoEscolhidoSetado = true;
                 break;
             }
@@ -31,12 +30,12 @@ Inimigo EnemySpawn::getRandomEnemy(std::map<double, Inimigo> &inimigosSpawn) {
     return inimigoEscolhido;
 }
 
-void EnemySpawn::spawnEnemy(std::vector<Inimigo> &inimigos, std::map<double, Inimigo> &inimigosSpawn,
-                            int &lastSpawn, int &frame_count, std::vector<Heroi> &herois) {
-
-    if (lastSpawn == 0 || frame_count - lastSpawn == EnemyVariables().inimigoFrequency) {
+void EnemySpawn::spawnEnemy(std::vector<Inimigo> &inimigos, std::vector<Inimigo> &inimigosSpawn,
+                            int &lastSpawn, int &frame_count, std::vector<Heroi> &herois,
+                            std::map<std::string, double> &properties) {
+    int frequency = static_cast<int>(properties["inimigoFrequency"]);
+    if (lastSpawn == 0 || frame_count - lastSpawn == frequency) {
         lastSpawn = frame_count;
         inimigos.push_back(EnemySpawn::getRandomEnemy(inimigosSpawn));
     }
-
 }

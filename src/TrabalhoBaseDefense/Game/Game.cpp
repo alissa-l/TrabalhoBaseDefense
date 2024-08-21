@@ -10,7 +10,6 @@
 #include "../Util/VectorUtils.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "GameEntities/impl/Base.hpp"
-#include "Telas/TextoJogo.h"
 #include "GameEntities/Actions/Spawning/EnemySpawn.hpp"
 #include "Colisoes/Colisoes.h"
 #include "Variables/HeroVariables.h"
@@ -18,8 +17,9 @@
 #include "GameEntities/impl/Inimigos/InimigoRapido.h"
 #include "GameEntities/impl/Inimigos/InimigoFortificado.h"
 #include "Variables/WindowConstants.h"
-
-// SFML
+#include "GameEntities/impl/Inimigos/InimigoBoss.h"
+#include "Telas/TelaMenu.h"
+#include "GameEntities/Actions/Shooting/EnemyShooting.h"
 
 //Variaveis do jogo
 /**
@@ -30,7 +30,7 @@ std::vector<Heroi> herois;
 /**
  * Spawn de inimigos
  */
-std::map<double, Inimigo> inimigosSpawn;
+std::vector<Inimigo> inimigosSpawn;
 
 /**
  * Inimigos
@@ -73,11 +73,6 @@ sf::Vector2f projMousePos;
 bool shoot = false;
 
 /**
- * Texto do jogo
- */
-TextoJogo textoJogo;
-
-/**
  * Número round_c
  */
 int round_c = 0;
@@ -91,6 +86,17 @@ int heroDamageReset = 0;
  * Damage reset - Base
  */
 int baseDamageReset = 0;
+
+/**
+ * Total de inimigos mortos
+ */
+int totalInimigosMortos = 0;
+int totalInimigosMortosCalculo = 0;
+
+/**
+ * Mapa com as variáveis dos inimigos
+ */
+std::map<std::string, double> enemyVars;
 
 /**
  * Logger
@@ -113,9 +119,7 @@ void Game::setup() {
     }
 
     try {
-        inimigosSpawn.insert(std::pair<double, Inimigo>(InimigoComum().chanceSpawn, InimigoComum().get()));
-        inimigosSpawn.insert(std::pair<double, Inimigo>(InimigoRapido().chanceSpawn, InimigoRapido().get()));
-        inimigosSpawn.insert(std::pair<double, Inimigo>(InimigoFortificado().chanceSpawn, InimigoFortificado().get()));
+        loadEnemies();
     } catch (std::exception &e) {
         std::string s = e.what();
         throw std::runtime_error("Erro ao carregar os inimigos: " + s);
@@ -153,7 +157,7 @@ void Game::run() {
 
     // Tela de menu
     try {
-        menuScreen(window);
+        TelaMenu::menuScreen(window, logger);
     } catch (std::exception &e) {
         std::string se = e.what();
         logger.log(LogLevel::ERROR, "Erro abrindo tela de menu " + se);
@@ -165,17 +169,16 @@ void Game::run() {
         frame_count++;
         heroDamageReset--;
         baseDamageReset--;
-        EnemyVariables::setInimigoFrequency(EnemyVariables::inimigoFrequency - round_c * 30);
 
         // Eventos
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
 
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::KeyPressed) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
                     shoot = true;
                     projMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
                 }
@@ -222,65 +225,17 @@ void Game::run() {
 void Game::update(sf::RenderWindow &window) {
 
     // Update dos heróis
-    for (auto &heroi: herois) {
-        try {
-            heroi.update(window);
-
-            if (shoot) {
-                HeroShooting::shoot(shoot, heroi, projeteis, projMousePos);
-            }
-
-        } catch (std::exception &e) {
-            std::string es = e.what();
-            throw std::runtime_error("Erro ao atualizar o herói: " + es);
-        }
-
-    }
+    updateHeroi(window);
 
     // Update dos projeteis
-    for (int i = 0; i < projeteis.size(); i++) {
-
-        try {
-            Projetil projetil = projeteis[i];
-
-            projetil.update();
-
-            if (projetil.getProjetil().getPosition().x < 0 ||
-                projetil.getProjetil().getPosition().x > WindowConstants().tamX ||
-                projetil.getProjetil().getPosition().y < 0 ||
-                projetil.getProjetil().getPosition().y > WindowConstants().tamY) {
-
-                projeteis.erase(projeteis.begin() + i);
-            } else {
-                projeteis[i] = projetil;
-            }
-
-
-        } catch (std::exception &e) {
-            std::string es = e.what();
-            throw std::runtime_error("Erro ao atualizar o projetil: " + es);
-        }
-
-    }
+    updateProjetil();
 
     // Update dos inimigos
-    for (int i = 0; i < inimigos.size(); i++) {
-        try {
-            Inimigo inimigo = inimigos[i];
-            inimigo.update();
-            inimigo.updateDirecao(herois);
-            inimigos[i] = inimigo;
-        } catch (std::exception &e) {
-            std::string es = e.what();
-            throw std::runtime_error("Erro ao atualizar o inimigo: " + es);
-        }
-    }
+    updateInimigos();
 
-    // Spawna um inimigo se entrar na condição
-    EnemySpawn::spawnEnemy(inimigos, inimigosSpawn, lastSpawn, frame_count, herois);
+    // Update do round
+    updateRounds();
 
-    // Aumentar round_c
-    round_c = frame_count / (30 * 60);
     calculateColisions();
 }
 
@@ -300,7 +255,6 @@ void Game::draw(sf::RenderWindow &window) {
 
     base.draw(window);
 
-    window.draw(textoJogo.texto);
 }
 
 void Game::drawText(sf::RenderWindow &window) {
@@ -354,26 +308,67 @@ void Game::calculateColisions() {
             logger.log(LogLevel::DEBUG, si);
         }
 
-        // Inimigo x Base
+
+    }
+
+    // Colisao projetil inimigo x base
+    for(auto &proj : projeteis) {
+        if (proj.getFriendly()) continue;
+        if (Colisoes::colide(proj, base)) {
+            proj.setJaColidiu(true);
+            std::string si = "Projetil atingiu a base";
+            logger.log(LogLevel::DEBUG, si);
+
+            if (baseDamageReset > 0) continue;
+            base.setVida(base.getVida() - 5);
+            baseDamageReset = 60;
+        }
+    }
+
+    // Colisao projetil x projetil
+    for(auto &proj : projeteis) {
+        for(auto &proj2 : projeteis) {
+            if(&proj == &proj2) continue;
+            if (Colisoes::colide(proj, proj2)) {
+                proj.setJaColidiu(true);
+                proj2.setJaColidiu(true);
+                std::string si = "SORTE - Projetil atingiu outro projetil";
+                logger.log(LogLevel::DEBUG, si);
+            }
+        }
+    }
+
+    // Colisao inimigo x base
+    for(auto &inimigo : inimigos) {
         if (Colisoes::colide(inimigo, base)) {
+
+            // Posicoes e tamanhos das entidades pros calculos
+            sf::Vector2f basePos = base.getBase().getPosition();
+            sf::Vector2f baseSize = base.getBase().getSize();
+            sf::Vector2f inimigoPos = inimigo.getPosicao();
+
+            // Verifica qual borda o inimigo está tocando
+            bool isTouchingLeftEdge = (inimigoPos.x < basePos.x && inimigoPos.y >= basePos.y && inimigoPos.y <= basePos.y + baseSize.y);
+            bool isTouchingRightEdge = (inimigoPos.x > basePos.x + baseSize.x && inimigoPos.y >= basePos.y && inimigoPos.y <= basePos.y + baseSize.y);
+            bool isTouchingTopEdge = (inimigoPos.y < basePos.y && inimigoPos.x >= basePos.x && inimigoPos.x <= basePos.x + baseSize.x);
+            bool isTouchingBottomEdge = (inimigoPos.y > basePos.y + baseSize.y && inimigoPos.x >= basePos.x && inimigoPos.x <= basePos.x + baseSize.x);
+
+            // Faz o inimigo parar de se mover na direção da borda que ele está tocando
+            inimigo.setStopMovingX(isTouchingLeftEdge || isTouchingRightEdge);
+            inimigo.setStopMovingY(isTouchingTopEdge || isTouchingBottomEdge);
+
             if(baseDamageReset > 0) continue;
             base.setVida(base.getVida() - inimigo.getDano());
-            baseDamageReset = 30;
-            inimigo.setDirecao(sf::Vector2f(0, 0));
+            baseDamageReset = 60;
 
             std::string si = "Base atingida " + inimigo.getNome() + " - Vida: " + std::to_string(base.getVida());
             logger.log(LogLevel::DEBUG, si);
+        } else {
+            inimigo.setStopMovingX(false);
+            inimigo.setStopMovingY(false);
         }
     }
 
-    // Remove inimigos mortos
-    for (int i = 0; i < inimigos.size(); ++i) {
-        if (inimigos[i].getVida() <= 0) {
-            inimigos.erase(inimigos.begin() + i);
-            std::string si = "Inimigo morto " + inimigos[i].getNome();
-            logger.log(LogLevel::DEBUG, si);
-        }
-    }
 
     // Remove projeteis que colidiram
     for (int i = 0; i < projeteis.size(); ++i) {
@@ -386,68 +381,168 @@ void Game::calculateColisions() {
 
 }
 
+void Game::loadVars() {
+    enemyVars["inimigoFrequency"] = EnemyVariables().inimigoFrequency;
+    enemyVars["inimigoSpeedBase"] = EnemyVariables().inimigoSpeedBase;
+    enemyVars["inimigoBaseDamage"] = EnemyVariables().inimigoBaseDamage;
+    enemyVars["inimigoBaseLife"] = EnemyVariables().inimigoBaseLife;
+    enemyVars["baseSpawnRate"] = EnemyVariables().baseSpawnRate;
+    enemyVars["shootingFrequency"] = EnemyVariables().shootingFrequency;
+}
+
+void Game::increaseDifficulty() {
+    loadVars();
+
+    if (enemyVars["inimigoFrequency"] == 60) {
+        enemyVars["inimigoFrequency"] = 60;
+    } else {
+        enemyVars["inimigoFrequency"] = enemyVars["inimigoFrequency"] - 20;
+    }
+
+    enemyVars["inimigoSpeedBase"] = enemyVars["inimigoSpeedBase"] + 0.1;
+    enemyVars["inimigoBaseDamage"] = enemyVars["inimigoBaseDamage"] + 2;
+    enemyVars["inimigoBaseLife"] = enemyVars["inimigoBaseLife"] + 10;
+    enemyVars["baseSpawnRate"] = enemyVars["baseSpawnRate"] + 0.1;
+
+    logger.log(LogLevel::DEBUG, "Dificuldade aumentada");
+    for (auto m : enemyVars) {
+        logger.log(LogLevel::DEBUG, m.first + ": " + std::to_string(m.second));
+    }
+}
+
 /**
- * Tela de menu
+ * Carrega todos os tipos de inimigos
+ */
+void Game::loadEnemies() {
+    loadVars();
+
+    Inimigo inimigoComum = InimigoComum::get(enemyVars);
+    inimigosSpawn.push_back(inimigoComum);
+
+    Inimigo inimigoRapido = InimigoRapido::get(enemyVars);
+    inimigosSpawn.push_back(inimigoRapido);
+
+    Inimigo inimigoFortificado = InimigoFortificado::get(enemyVars);
+    inimigosSpawn.push_back(inimigoFortificado);
+
+    Inimigo inimigoBoss = InimigoBoss::get(enemyVars);
+    inimigosSpawn.push_back(inimigoBoss);
+}
+
+/**
+ * Update dos herois <br>
+ * Calcula a posição do herói e controle dos tiros
  * @param window
  */
-void Game::menuScreen(sf::RenderWindow &window) {
-    while (true) {
-        sf::Event event{};
+void Game::updateHeroi(sf::RenderWindow &window) {
+    for (auto &heroi: herois) {
+        try {
+            heroi.update(window);
 
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-                logger.log(LogLevel::INFO, "Jogo encerrado - menu");
+            if (shoot) {
+                HeroShooting::shoot(shoot, heroi, projeteis, projMousePos);
             }
 
-            if (event.type == sf::Event::KeyPressed) {
-                logger.log(LogLevel::INFO, "Jogo iniciado - menu");
-                return;
+        } catch (std::exception &e) {
+            std::string es = e.what();
+            throw std::runtime_error("Erro ao atualizar o herói: " + es);
+        }
+
+    }
+}
+
+/**
+ * Update dos inimigos <br>
+ * Atualiza a posição e direção dos inimigos e verifica se estão mortos
+ */
+void Game::updateInimigos() {
+
+    // Update e atualizar direção
+    for (auto &i : inimigos) {
+        try {
+            Inimigo inimigo = i;
+            inimigo.update();
+            inimigo.updateDirecao(herois);
+            i = inimigo;
+        } catch (std::exception &e) {
+            std::string es = e.what();
+            throw std::runtime_error("Erro ao atualizar o inimigo: " + es);
+        }
+    }
+
+    // Remove inimigos mortos
+    for (int i = 0; i < inimigos.size(); ++i) {
+        if (inimigos[i].getVida() <= 0) {
+            inimigos.erase(inimigos.begin() + i);
+            std::string si = "Inimigo morto " + inimigos[i].getNome();
+            totalInimigosMortos++;
+            totalInimigosMortosCalculo++;
+            logger.log(LogLevel::DEBUG, si);
+        }
+    }
+
+    // Tiros dos inimigos
+    for(auto &i : inimigos) {
+        double shootingFrequency = enemyVars["shootingFrequency"];
+        bool canShoot = i.getLastShot() % static_cast<int>(shootingFrequency) == 0;
+        if (i.getLastShot() == 0 && canShoot) {
+            i.setLastShot(m_clock.getElapsedTime().asSeconds());
+            sf::Vector2f basePos = base.getBase().getPosition();
+            sf::Vector2f baseSize = base.getBase().getSize();
+            sf::Vector2f centroBase = sf::Vector2f(basePos.x + baseSize.x / 2, basePos.y + baseSize.y / 2);
+            sf::Vector2f direcao = VectorUtils::calcularDirecao(i.getPosicao(), centroBase);
+            EnemyShooting::shoot(i, projeteis, direcao);
+        } else {
+            i.setLastShot(i.getLastShot() + 1);
+        }
+    }
+
+    // Spawna um inimigo se entrar na condição
+    EnemySpawn::spawnEnemy(inimigos, inimigosSpawn, lastSpawn, frame_count, herois, enemyVars);
+}
+
+/**
+ * Update dos projeteis <br>
+ * Move os projeteis e verifica se ja sairam da tela
+ */
+void Game::updateProjetil() {
+    for (int i = 0; i < projeteis.size(); i++) {
+
+        try {
+            Projetil projetil = projeteis[i];
+
+            projetil.update();
+
+            if (projetil.getProjetil().getPosition().x < 0 ||
+                projetil.getProjetil().getPosition().x > WindowConstants().tamX ||
+                projetil.getProjetil().getPosition().y < 0 ||
+                projetil.getProjetil().getPosition().y > WindowConstants().tamY) {
+
+                projeteis.erase(projeteis.begin() + i);
+            } else {
+                projeteis[i] = projetil;
             }
 
-        }
-        window.clear(sf::Color::White);
 
-
-        sf::Font font;
-        if (!font.loadFromFile("resources/font/arial.ttf")) {
-            throw std::runtime_error("Erro ao carregar fonte");
+        } catch (std::exception &e) {
+            std::string es = e.what();
+            throw std::runtime_error("Erro ao atualizar o projetil: " + es);
         }
 
-        //
-        // Textos do menu
-        //
-        std::vector<sf::Text> textos(2);
+    }
+}
 
-        // Titulo
-        textos[0].setString("Base Defense");
-        textos[0].setCharacterSize(30);
-
-        // Instruções
-        textos[1].setString("Pressione qualquer tecla para iniciar o jogo");
-        textos[1].setCharacterSize(20);
-
-        // Para cada texto, setar as propriedades
-        for (auto &texto : textos) {
-            texto.setFillColor(sf::Color::Black);
-            texto.setStyle(sf::Text::Bold);
-            texto.setFont(font);
-
-            // Centrailizar textto
-            sf::FloatRect textRect = texto.getLocalBounds();
-            texto.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-            texto.setPosition(sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y / 2.0f));
+/**
+ * Faz update dos rounds <br>
+ * Aumenta a dificuldade a cada round
+ */
+void Game::updateRounds() {
+    if(totalInimigosMortos > 1 && totalInimigosMortosCalculo % 10 == 0) {
+        round_c = round_c + 1;
+        totalInimigosMortosCalculo++;
+        if(round_c < 20) {
+            increaseDifficulty();
+            loadEnemies();
         }
-
-        // Ajustar a posição do titulo por um offset de Y
-        textos[1].move(0, 50);
-
-        // Desenhar os textos
-        for (auto texto : textos) {
-            window.draw(texto);
-        }
-
-        // Display
-        window.display();
     }
 }

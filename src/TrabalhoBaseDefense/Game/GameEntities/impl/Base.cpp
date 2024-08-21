@@ -6,6 +6,7 @@
 #include "Base.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "../../Variables/Variables.h"
+#include "../../Variables/WindowConstants.h"
 
 
 Base::Base(int vida, sf::RectangleShape base) {
@@ -36,7 +37,14 @@ void Base::load() {
     base.setOutlineThickness(5);
     base.setOutlineColor(sf::Color::Black);
 
-    base.setPosition(Variables().basePosX, Variables().basePosY);
+    sf::Vector2u windowSize = sf::Vector2u(WindowConstants().tamX, WindowConstants().tamY);
+
+    // Calculate the center position
+    sf::Vector2f centerPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
+
+    // Set the position to the center minus half of the rectangle size
+    base.setPosition(centerPosition.x - base.getSize().x / 2.0f, centerPosition.y - base.getSize().y / 2.0f);
+
 }
 
 void Base::draw(sf::RenderWindow &window) {

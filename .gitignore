@@ -8,3 +8,4 @@ Makefile
 TrabalhoBaseDefense
 _deps
 CMakeFiles
+params/n_*

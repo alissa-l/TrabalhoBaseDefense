@@ -34,8 +34,6 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Logger/Logger.cpp
         src/TrabalhoBaseDefense/Logger/Logger.hpp
         src/TrabalhoBaseDefense/Logger/LogLevel.h
-        src/TrabalhoBaseDefense/Game/Telas/TextoJogo.cpp
-        src/TrabalhoBaseDefense/Game/Telas/TextoJogo.h
         src/TrabalhoBaseDefense/Game/GameEntities/Actions/Shooting/EnemyShooting.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/Actions/Shooting/EnemyShooting.h
         src/TrabalhoBaseDefense/Game/Colisoes/Colisoes.cpp
@@ -51,6 +49,10 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoFortificado.h
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoBoss.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigos/InimigoBoss.h
+        src/TrabalhoBaseDefense/Game/Telas/TelaMenu.cpp
+        src/TrabalhoBaseDefense/Game/Telas/TelaMenu.h
+        src/TrabalhoBaseDefense/Game/Telas/TelaGameOver.cpp
+        src/TrabalhoBaseDefense/Game/Telas/TelaGameOver.h
 )
 target_link_libraries(TrabalhoBaseDefenseEXE PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefenseEXE PRIVATE cxx_std_17)
