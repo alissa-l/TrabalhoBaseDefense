@@ -4,6 +4,7 @@
 
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "../Logger/Logger.hpp"
+#include "GameEntities/impl/Inimigo.h"
 
 class Game {
 private:

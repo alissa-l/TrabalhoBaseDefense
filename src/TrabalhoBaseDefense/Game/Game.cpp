@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include "Game.h"
 #include "Variables/Variables.h"
 #include "GameEntities/GameEntity.h"
@@ -20,6 +21,9 @@
 #include "GameEntities/impl/Inimigos/InimigoBoss.h"
 #include "Telas/TelaMenu.h"
 #include "GameEntities/Actions/Shooting/EnemyShooting.h"
+#include "GameEntities/impl/Dropavel.h"
+#include "GameEntities/Actions/Spawning/DropavelSpawn.h"
+#include "GameUtils/GameEnemyUtils.h"
 
 //Variaveis do jogo
 /**
@@ -103,6 +107,8 @@ std::map<std::string, double> enemyVars;
  */
 Logger logger = Logger(Variables().logFile, Variables().logLevel);
 
+std::vector<Dropavel> dropaveis;
+
 /**
  * Setup do jogo
  */
@@ -156,14 +162,17 @@ void Game::run() {
     }
 
     // Tela de menu
+    int dificuldade = 0;
     try {
-        TelaMenu::menuScreen(window, logger);
+        TelaMenu::menuScreen(window, logger, dificuldade);
     } catch (std::exception &e) {
         std::string se = e.what();
         logger.log(LogLevel::ERROR, "Erro abrindo tela de menu " + se);
     }
 
+    //
     // Loop principal
+    //
     while (window.isOpen()) {
 
         frame_count++;
@@ -251,6 +260,10 @@ void Game::draw(sf::RenderWindow &window) {
 
     for (auto projetil: projeteis) {
         projetil.draw(window);
+    }
+
+    for (auto dropavel: dropaveis) {
+        dropavel.draw(window);
     }
 
     base.draw(window);
@@ -457,47 +470,27 @@ void Game::updateHeroi(sf::RenderWindow &window) {
  */
 void Game::updateInimigos() {
 
-    // Update e atualizar direção
-    for (auto &i : inimigos) {
-        try {
-            Inimigo inimigo = i;
-            inimigo.update();
-            inimigo.updateDirecao(herois);
-            i = inimigo;
-        } catch (std::exception &e) {
-            std::string es = e.what();
-            throw std::runtime_error("Erro ao atualizar o inimigo: " + es);
-        }
-    }
+    /**
+     * Atualiza a direção dos inimigos e chama inimigo.update()
+     */
+    GameEnemyUtils::updateDirecaoInimigos(inimigos, herois);
 
-    // Remove inimigos mortos
-    for (int i = 0; i < inimigos.size(); ++i) {
-        if (inimigos[i].getVida() <= 0) {
-            inimigos.erase(inimigos.begin() + i);
-            std::string si = "Inimigo morto " + inimigos[i].getNome();
-            totalInimigosMortos++;
-            totalInimigosMortosCalculo++;
-            logger.log(LogLevel::DEBUG, si);
-        }
-    }
+    /**
+     * Limpa os inimigos mortos <br>
+     * Dropa um item aleatório se o inimigo morrer
+     */
+    GameEnemyUtils::limparInimigos(inimigos, dropaveis, totalInimigosMortos, totalInimigosMortosCalculo);
 
-    // Tiros dos inimigos
-    for(auto &i : inimigos) {
-        double shootingFrequency = enemyVars["shootingFrequency"];
-        bool canShoot = i.getLastShot() % static_cast<int>(shootingFrequency) == 0;
-        if (i.getLastShot() == 0 && canShoot) {
-            i.setLastShot(m_clock.getElapsedTime().asSeconds());
-            sf::Vector2f basePos = base.getBase().getPosition();
-            sf::Vector2f baseSize = base.getBase().getSize();
-            sf::Vector2f centroBase = sf::Vector2f(basePos.x + baseSize.x / 2, basePos.y + baseSize.y / 2);
-            sf::Vector2f direcao = VectorUtils::calcularDirecao(i.getPosicao(), centroBase);
-            EnemyShooting::shoot(i, projeteis, direcao);
-        } else {
-            i.setLastShot(i.getLastShot() + 1);
-        }
-    }
+    /**
+     * Spawna projeteis dos inimigos <br>
+     * Atira em direção a base
+     */
+    double shootingFrequency = enemyVars["shootingFrequency"];
+    GameEnemyUtils::tiroInimigos(inimigos, projeteis, m_clock, shootingFrequency, base);
 
-    // Spawna um inimigo se entrar na condição
+    /**
+     * Spawna inimigos <br>
+     */
     EnemySpawn::spawnEnemy(inimigos, inimigosSpawn, lastSpawn, frame_count, herois, enemyVars);
 }
 

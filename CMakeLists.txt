@@ -53,6 +53,25 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Game/Telas/TelaMenu.h
         src/TrabalhoBaseDefense/Game/Telas/TelaGameOver.cpp
         src/TrabalhoBaseDefense/Game/Telas/TelaGameOver.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropavel.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropavel.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelMunicao.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelMunicao.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaHeroi.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaHeroi.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaBase.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaBase.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelContext.hpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/IDropavelStrategy.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelMunicaoStrategy.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaHeroiStrategy.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaBaseStrategy.h
+        src/TrabalhoBaseDefense/Game/GameEntities/Actions/Spawning/DropavelSpawn.cpp
+        src/TrabalhoBaseDefense/Game/GameEntities/Actions/Spawning/DropavelSpawn.h
+        src/TrabalhoBaseDefense/Game/GameUtils/GameEnemyUtils.cpp
+        src/TrabalhoBaseDefense/Game/GameUtils/GameEnemyUtils.h
+        src/TrabalhoBaseDefense/Util/FileUtils.cpp
+        src/TrabalhoBaseDefense/Util/FileUtils.h
 )
 target_link_libraries(TrabalhoBaseDefenseEXE PRIVATE sfml-graphics)
 target_compile_features(TrabalhoBaseDefenseEXE PRIVATE cxx_std_17)
