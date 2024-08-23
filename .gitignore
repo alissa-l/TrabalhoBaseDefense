@@ -5,7 +5,6 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 log.txt
 Makefile
-TrabalhoBaseDefense
 _deps
 CMakeFiles
 params/n_*
