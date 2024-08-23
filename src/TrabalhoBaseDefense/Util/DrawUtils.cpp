@@ -6,13 +6,6 @@
 #include "DrawUtils.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 
-sf::RectangleShape DrawUtils::desenharHeroi(Heroi &heroi) {
-    sf::RectangleShape rect(sf::Vector2f(50, 50));
-    rect.setFillColor(sf::Color::Red);
-    rect.setPosition(heroi.getPosX(), heroi.getPosY());
-    return rect;
-}
-
 void DrawUtils::createText(const std::string &texto, int posX, int posY, sf::RenderWindow &window) {
     sf::Font font;
     font.loadFromFile("resources/font/arial.ttf");

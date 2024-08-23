@@ -1,2 +1,11 @@
 .idea
 cmake-build-debug
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+log.txt
+Makefile
+TrabalhoBaseDefense
+_deps
+CMakeFiles
+params/n_*

@@ -8,14 +8,12 @@
 
 #include <string>
 #include "SFML/Graphics/RectangleShape.hpp"
-#include "../Classes/Heroi.hpp"
+#include "../Game/GameEntities/impl/Heroi.hpp"
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 
 class DrawUtils {
 public:
-    static sf::RectangleShape desenharHeroi(Heroi &heroi);
-
     static void createText(const std::string &texto, int posX, int posY, sf::RenderWindow &window);
 
 };
