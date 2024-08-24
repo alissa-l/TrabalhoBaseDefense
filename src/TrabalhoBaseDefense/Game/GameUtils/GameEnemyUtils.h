@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "../GameEntities/impl/Inimigo.h"
-#include "../GameEntities/impl/Projetil.hpp"
+#include "../GameEntities/impl/Projetil.h"
 #include "../GameEntities/impl/Dropavel.h"
 #include "../GameEntities/impl/Base.hpp"
 

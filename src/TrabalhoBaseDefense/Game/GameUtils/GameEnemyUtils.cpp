@@ -67,12 +67,10 @@ void GameEnemyUtils::tiroInimigos(std::vector<Inimigo> &inimigos, std::vector<Pr
 }
 
 void GameEnemyUtils::updateDirecaoInimigos(std::vector<Inimigo> &inimigos, std::vector<Heroi> &herois) {
-    for (auto &i : inimigos) {
+    for (auto &inimigo : inimigos) {
         try {
-            Inimigo inimigo = i;
             inimigo.update();
             inimigo.updateDirecao(herois);
-            i = inimigo;
         } catch (std::exception &e) {
             std::string es = e.what();
             throw std::runtime_error("Erro ao atualizar o inimigo: " + es);

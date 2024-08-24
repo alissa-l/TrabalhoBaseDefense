@@ -26,11 +26,13 @@ void HeroShooting::shoot(bool &shoot, Heroi &heroi, std::vector<Projetil> &proje
 
     heroi.setMunicao(heroi.getMunicao() - 1);
 
-    sf::RectangleShape projShape = sf::RectangleShape(sf::Vector2f(10, 10));
-    projShape.setFillColor(sf::Color::Black);
-    projShape.setPosition(heroi.getPosicao());
+    std::string path = "resources/sprites/FLECHA1.png";
+    proj.setSpritePath(path);
 
-    proj.setProjetil(projShape);
+    sf::Vector2f collisionBoxSize = sf::Vector2f(10, 10);
+    proj.setCollisionBox(sf::RectangleShape(collisionBoxSize));
+    proj.setPosicao(heroi.getPosicao());
+    proj.load();
 
     projeteis.push_back(proj);
     shoot = false;

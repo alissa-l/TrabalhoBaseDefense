@@ -8,12 +8,13 @@ void EnemyShooting::shoot(Inimigo &inimigo, std::vector<Projetil> &projeteis, sf
 
     proj.setDirecao(direcao);
 
+    std::string path = "resources/sprites/Laser1.png";
+    proj.setSpritePath(path);
 
-    sf::RectangleShape projShape = sf::RectangleShape(sf::Vector2f(10, 10));
-    projShape.setFillColor(sf::Color::Red);
-    projShape.setPosition(inimigo.getPosicao());
+    sf::Vector2f collisionBoxSize = sf::Vector2f(10, 10);
+    proj.setCollisionBox(sf::RectangleShape(collisionBoxSize));
+    proj.setPosicao(inimigo.getPosicao());
 
-    proj.setProjetil(projShape);
-
+    proj.load();
     projeteis.push_back(proj);
 }

@@ -18,7 +18,7 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Util/DrawUtils.cpp
         src/TrabalhoBaseDefense/Util/DrawUtils.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Projetil.cpp
-        src/TrabalhoBaseDefense/Game/GameEntities/impl/Projetil.hpp
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Projetil.h
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigo.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Inimigo.h
         src/TrabalhoBaseDefense/Game/Variables/Variables.h
@@ -64,7 +64,7 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelContext.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/IDropavelStrategy.h
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelMunicaoStrategy.h
-        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaHeroiStrategy.h
+        src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaHeroiStrategy.hpp
         src/TrabalhoBaseDefense/Game/GameEntities/impl/Dropaveis/DropavelVidaBaseStrategy.h
         src/TrabalhoBaseDefense/Game/GameEntities/Actions/Spawning/DropavelSpawn.cpp
         src/TrabalhoBaseDefense/Game/GameEntities/Actions/Spawning/DropavelSpawn.h

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "../../impl/Heroi.hpp"
-#include "../../impl/Projetil.hpp"
+#include "../../impl/Projetil.h"
 
 class HeroShooting {
 public:

@@ -5,7 +5,7 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "../GameEntities/impl/Heroi.hpp"
 #include "../GameEntities/impl/Inimigo.h"
-#include "../GameEntities/impl/Projetil.hpp"
+#include "../GameEntities/impl/Projetil.h"
 #include "../GameEntities/impl/Base.hpp"
 #include "../GameEntities/impl/Dropavel.h"
 

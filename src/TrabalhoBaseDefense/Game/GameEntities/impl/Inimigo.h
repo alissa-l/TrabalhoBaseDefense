@@ -8,7 +8,6 @@
 
 class Inimigo : public GameEntity {
 private:
-    sf::RectangleShape inimigoShape;
     sf::RectangleShape colisionBox;
     int vida;
     float velocidade;
@@ -20,6 +19,9 @@ private:
     bool stopMovingX;
     bool stopMovingY;
     int lastShot = 0;
+    sf::Sprite sprite;
+    sf::Texture texture;
+    std::string spritePath;
 public:
 
     /*
@@ -29,13 +31,16 @@ public:
 
     /*
      * Construtor com parametros
-     * @param shape
      * @param vida
      * @param velocidade
      * @param dano
      * @param colisionBoxSize
+     * @param nome
+     * @param chanceSpawn1
+     * @param spritePath1
      */
-    Inimigo(sf::RectangleShape shape, int vida, float velocidade, int dano, sf::Vector2f colisionBoxSize, std::string nome, double chanceSpawn1);
+    Inimigo(int vida, float velocidade, int dano, sf::Vector2f colisionBoxSize,
+            std::string nome, double chanceSpawn1, std::string spritePath1);
 
     /**
      * Carrega o inimigo
@@ -63,35 +68,45 @@ public:
      */
     ///@{
     sf::RectangleShape getColisionBox() const;
+
     void setColisionBox(const sf::RectangleShape &colisionBox1);
 
     int getVida() const;
+
     void setVida(int vida);
 
     float getVelocidade() const;
+
     void setVelocidade(float velocidade);
 
     int getDano() const;
+
     void setDano(int dano);
 
     std::string &getNome();
+
     void setNome(const std::string &nome);
 
     const sf::Vector2f &getPosicao() const;
+
     void setPosicao(const sf::Vector2f &posicao);
 
     const sf::Vector2f &getDirecao() const;
+
     void setDirecao(const sf::Vector2f &direcao);
 
     double getChanceSpawn() const;
 
     bool isStopMovingX() const;
+
     void setStopMovingX(bool stopMoving);
 
     bool isStopMovingY() const;
+
     void setStopMovingY(bool stopMoving);
 
     int getLastShot() const;
+
     void setLastShot(int lastShot1);
     ///@}
 };

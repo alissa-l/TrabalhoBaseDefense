@@ -5,7 +5,7 @@
 #include "GameEntities/GameEntity.h"
 #include "GameEntities/impl/Heroi.hpp"
 #include "GameEntities/impl/Inimigo.h"
-#include "GameEntities/impl/Projetil.hpp"
+#include "GameEntities/impl/Projetil.h"
 #include "SFML/Window/Event.hpp"
 #include "GameEntities/Actions/Shooting/HeroShooting.h"
 #include "../Util/VectorUtils.hpp"
@@ -127,6 +127,10 @@ void Game::setup() {
 
     try {
         loadEnemies();
+
+        for(auto &inimigo : inimigosSpawn) {
+            inimigo.load();
+        }
     } catch (std::exception &e) {
         std::string s = e.what();
         throw std::runtime_error("Erro ao carregar os inimigos: " + s);
@@ -528,10 +532,10 @@ void Game::updateProjetil() {
 
             projetil.update();
 
-            if (projetil.getProjetil().getPosition().x < 0 ||
-                projetil.getProjetil().getPosition().x > WindowConstants().tamX ||
-                projetil.getProjetil().getPosition().y < 0 ||
-                projetil.getProjetil().getPosition().y > WindowConstants().tamY) {
+            if (projetil.getCollisionBox().getPosition().x < 0 ||
+                projetil.getCollisionBox().getPosition().x > WindowConstants().tamX ||
+                projetil.getCollisionBox().getPosition().y < 0 ||
+                projetil.getCollisionBox().getPosition().y > WindowConstants().tamY) {
 
                 projeteis.erase(projeteis.begin() + i);
             } else {

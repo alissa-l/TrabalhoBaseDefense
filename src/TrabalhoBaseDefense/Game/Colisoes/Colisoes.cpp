@@ -8,7 +8,7 @@ bool Colisoes::colide(Heroi &heroi, Inimigo &inimigo) {
 bool Colisoes::colide(Inimigo &inimigo, std::vector<Projetil> &projeteis) {
     for (auto &proj : projeteis) {
         if(!proj.getFriendly()) continue;
-            if (inimigo.getColisionBox().getGlobalBounds().intersects(proj.getProjetil().getGlobalBounds())) {
+            if (inimigo.getColisionBox().getGlobalBounds().intersects(proj.getCollisionBox().getGlobalBounds())) {
                 proj.setJaColidiu(true);
             return true;
         }
@@ -19,7 +19,7 @@ bool Colisoes::colide(Inimigo &inimigo, std::vector<Projetil> &projeteis) {
 bool Colisoes::colide(Heroi &heroi, std::vector<Projetil> &projeteis) {
     for (auto &proj : projeteis) {
         if(proj.getFriendly()) continue;
-        if (heroi.getColisionBox().getGlobalBounds().intersects(proj.getProjetil().getGlobalBounds())) {
+        if (heroi.getColisionBox().getGlobalBounds().intersects(proj.getCollisionBox().getGlobalBounds())) {
             return true;
         }
     }
@@ -38,7 +38,7 @@ bool Colisoes::colide(Inimigo &inimigo, Base &base) {
 }
 
 bool Colisoes::colide(Projetil &projetil, Base &base) {
-    sf::FloatRect projetilBounds = projetil.getProjetil().getGlobalBounds();
+    sf::FloatRect projetilBounds = projetil.getCollisionBox().getGlobalBounds();
     sf::FloatRect baseBounds = base.getBase().getGlobalBounds();
 
     if (projetilBounds.intersects(baseBounds)) {
@@ -49,8 +49,8 @@ bool Colisoes::colide(Projetil &projetil, Base &base) {
 }
 
 bool Colisoes::colide(Projetil &projetil, Projetil &projetil2) {
-    sf::FloatRect projetilBounds = projetil.getProjetil().getGlobalBounds();
-    sf::FloatRect projetil2Bounds = projetil2.getProjetil().getGlobalBounds();
+    sf::FloatRect projetilBounds = projetil.getCollisionBox().getGlobalBounds();
+    sf::FloatRect projetil2Bounds = projetil2.getCollisionBox().getGlobalBounds();
 
     if (projetilBounds.intersects(projetil2Bounds)) {
         return true;
