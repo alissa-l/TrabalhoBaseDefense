@@ -4,12 +4,12 @@
 
 #include "IDropavelStrategy.h"
 #include "../Heroi.hpp"
+#include "../Base.hpp"
 
 class DropavelMunicaoStrategy : public IDropavelStrategy {
 public:
-    void effectImpl(void* t) override {
-        auto* obj = static_cast<Heroi*>(t);
-        obj->setMunicao(obj->getMunicao() + 10);
+    void effectImpl(Base &base, Heroi &heroi) override {
+        heroi.setMunicao(heroi.getMunicao() + 2);
     }
 };
 

@@ -5,6 +5,8 @@
 #include "../GameEntity.h"
 #include "SFML/Graphics/RectangleShape.hpp"
 #include "Dropaveis/IDropavelStrategy.h"
+#include "Base.hpp"
+#include "Heroi.hpp"
 
 class Dropavel : GameEntity {
 private:
@@ -24,9 +26,8 @@ public:
 
     void update() override;
 
-    template<typename T>
-    void effect(T &t) {
-        strategy->effectImpl(static_cast<void*>(&t));
+    void effect(Base &base, Heroi &heroi) {
+        strategy->effectImpl(base, heroi);
     }
 
     sf::RectangleShape getDropavelShape() const;
@@ -42,6 +43,8 @@ public:
     void setTempoVida(int tempoVida);
 
     void setStrategy(IDropavelStrategy *strategy);
+
+    IDropavelStrategy *getStrategy() const;
 };
 
 

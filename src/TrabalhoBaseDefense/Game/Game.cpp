@@ -24,6 +24,7 @@
 #include "GameEntities/impl/Dropavel.h"
 #include "GameEntities/Actions/Spawning/DropavelSpawn.h"
 #include "GameUtils/GameEnemyUtils.h"
+#include "GameEntities/impl/Dropaveis/DropavelContext.hpp"
 
 //Variaveis do jogo
 /**
@@ -170,6 +171,10 @@ void Game::run() {
         logger.log(LogLevel::ERROR, "Erro abrindo tela de menu " + se);
     }
 
+    for (int i = 0; i < dificuldade * 2; ++i) {
+        increaseDifficulty();
+    }
+    
     //
     // Loop principal
     //
@@ -194,7 +199,7 @@ void Game::run() {
             }
         }
 
-//        if (base.getVida() <= 0) {
+//        if (baseShape.getVida() <= 0) {
 //            window.close();
 //            // TODO: Implementar tela de game over
 //        }
@@ -244,6 +249,11 @@ void Game::update(sf::RenderWindow &window) {
 
     // Update do round
     updateRounds();
+
+    // Update dos drops
+    for (auto &dropavel: dropaveis) {
+        dropavel.update();
+    }
 
     calculateColisions();
 }
@@ -324,12 +334,12 @@ void Game::calculateColisions() {
 
     }
 
-    // Colisao projetil inimigo x base
+    // Colisao projetil inimigo x baseShape
     for(auto &proj : projeteis) {
         if (proj.getFriendly()) continue;
         if (Colisoes::colide(proj, base)) {
             proj.setJaColidiu(true);
-            std::string si = "Projetil atingiu a base";
+            std::string si = "Projetil atingiu a baseShape";
             logger.log(LogLevel::DEBUG, si);
 
             if (baseDamageReset > 0) continue;
@@ -351,7 +361,7 @@ void Game::calculateColisions() {
         }
     }
 
-    // Colisao inimigo x base
+    // Colisao inimigo x baseShape
     for(auto &inimigo : inimigos) {
         if (Colisoes::colide(inimigo, base)) {
 
@@ -379,6 +389,18 @@ void Game::calculateColisions() {
         } else {
             inimigo.setStopMovingX(false);
             inimigo.setStopMovingY(false);
+        }
+    }
+
+    // Dropaveis x heroi
+    for (int i = 0; i < dropaveis.size(); ++i) {
+        for (auto &heroi : herois) {
+            if (Colisoes::colide(heroi, dropaveis[i])) {
+                DropavelContext::applyEffect(heroi, base, dropaveis[i]);
+                dropaveis.erase(dropaveis.begin() + i);
+                --i;
+                break;
+            }
         }
     }
 
@@ -483,7 +505,7 @@ void Game::updateInimigos() {
 
     /**
      * Spawna projeteis dos inimigos <br>
-     * Atira em direção a base
+     * Atira em direção a baseShape
      */
     double shootingFrequency = enemyVars["shootingFrequency"];
     GameEnemyUtils::tiroInimigos(inimigos, projeteis, m_clock, shootingFrequency, base);

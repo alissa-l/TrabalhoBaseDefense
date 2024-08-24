@@ -5,4 +5,5 @@ Dropavel DropavelVidaBase::get() {
     shape.setFillColor(sf::Color::Magenta);
     Dropavel dropavel = {shape, sf::Vector2f(0, 0), 0};
     dropavel.setStrategy(new DropavelVidaBaseStrategy());
+    return dropavel;
 }

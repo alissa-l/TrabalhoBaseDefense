@@ -39,7 +39,7 @@ public:
                    int &totalInimigosMortosCalculo);
 
     /**
-     * Atira na base
+     * Atira na baseShape
      * @param inimigos
      * @param projeteis
      * @param clock

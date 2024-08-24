@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Colisoes.h"
 
 bool Colisoes::colide(Heroi &heroi, Inimigo &inimigo) {
@@ -56,4 +57,14 @@ bool Colisoes::colide(Projetil &projetil, Projetil &projetil2) {
     }
 
     return false;
+}
+
+bool Colisoes::colide(Heroi &heroi, Dropavel &dropavel) {
+
+    if (heroi.getColisionBox().getGlobalBounds().intersects(dropavel.getDropavelShape().getGlobalBounds())) {
+        return true;
+    }
+
+    return false;
+
 }

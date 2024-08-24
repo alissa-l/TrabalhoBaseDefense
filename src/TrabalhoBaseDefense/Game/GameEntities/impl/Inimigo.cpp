@@ -70,13 +70,13 @@ void Inimigo::update() {
 }
 
 /**
- * Atualiza a direção do inimigo com base no heroi mais proximo
+ * Atualiza a direção do inimigo com baseShape no heroi mais proximo
  * @param herois
  */
 void Inimigo::updateDirecao(std::vector<Heroi> &herois) {
     std::vector<sf::Vector2f> posHerois;
     for (auto &heroi: herois) {
-        posHerois.push_back(heroi.sprite.getPosition());
+        posHerois.push_back(heroi.getPosicao());
     }
     VectorUtils::sortVectorByDistance(posicao, posHerois);
 

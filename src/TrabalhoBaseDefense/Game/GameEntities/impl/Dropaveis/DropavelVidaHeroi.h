@@ -3,7 +3,7 @@
 
 
 #include "../Dropavel.h"
-#include "DropavelVidaHeroiStrategy.h"
+#include "DropavelVidaHeroiStrategy.hpp"
 
 class DropavelVidaHeroi : public Dropavel {
 public:

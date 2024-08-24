@@ -1,7 +1,7 @@
 #include "InimigoFortificado.h"
 
 /**
- * Constroi um inimigo fortificado usando variaveis base
+ * Constroi um inimigo fortificado usando variaveis baseShape
  * @return inimigo fortificado
  */
 Inimigo InimigoFortificado::get(std::map<std::string, double> properties) {

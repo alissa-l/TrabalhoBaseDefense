@@ -7,6 +7,7 @@
 #include "../GameEntities/impl/Inimigo.h"
 #include "../GameEntities/impl/Projetil.hpp"
 #include "../GameEntities/impl/Base.hpp"
+#include "../GameEntities/impl/Dropavel.h"
 
 class Colisoes {
 public:
@@ -35,7 +36,7 @@ public:
     static bool colide(Heroi &heroi, std::vector<Projetil> &projeteis);
 
     /**
-     * Verifica se houve colisão entre o inimigo e a base
+     * Verifica se houve colisão entre o inimigo e a baseShape
      * @param inimigo
      * @param base
      * @return
@@ -43,7 +44,7 @@ public:
     static bool colide(Inimigo &inimigo, Base &base);
 
     /**
-     * Verifica se houve colisão entre o projetil e a base
+     * Verifica se houve colisão entre o projetil e a baseShape
      * @param projetil
      * @param base
      * @return
@@ -55,7 +56,10 @@ public:
      */
     static bool colide(Projetil &projetil, Projetil &projetil2);
 
-    //static bool colide(Projetil &projetil, Dropavel &dropavel);
+    /**
+     * Verifica se houve colisão entre um projetil e um dropavel
+     */
+    static bool colide(Heroi &heroi, Dropavel &dropavel);
 };
 
 

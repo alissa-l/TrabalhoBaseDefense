@@ -20,7 +20,7 @@ void HeroShooting::shoot(bool &shoot, Heroi &heroi, std::vector<Projetil> &proje
     Projetil proj = Projetil();
 
     proj.setFriendly(true);
-    sf::Vector2f direcaoReal = VectorUtils::calcularDirecao(heroi.sprite.getPosition(), direcao);
+    sf::Vector2f direcaoReal = VectorUtils::calcularDirecao(heroi.getPosicao(), direcao);
 
     proj.setDirecao(direcaoReal);
 
@@ -28,7 +28,7 @@ void HeroShooting::shoot(bool &shoot, Heroi &heroi, std::vector<Projetil> &proje
 
     sf::RectangleShape projShape = sf::RectangleShape(sf::Vector2f(10, 10));
     projShape.setFillColor(sf::Color::Black);
-    projShape.setPosition(heroi.sprite.getPosition());
+    projShape.setPosition(heroi.getPosicao());
 
     proj.setProjetil(projShape);
 
