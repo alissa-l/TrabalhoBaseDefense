@@ -9,29 +9,29 @@
  * @return
  */
 Dropavel DropavelSpawn::spawnRandomDropavel() {
-
     // Numero aleatorio entre 0 e 2
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    gen.seed(std::random_device()());
     std::uniform_int_distribution<> dis(0, 2);
 
     int random = dis(gen);
 
     // Retorna um dropavel aleatorio
-    Dropavel dropavel = Dropavel();
+    Dropavel dropavel;
     switch (random) {
         case 0: {
-            DropavelVidaHeroi drop0 = DropavelVidaHeroi();
+            DropavelVidaHeroi drop0;
             dropavel = drop0.get();
             break;
         }
         case 1: {
-            DropavelVidaBase drop1 = DropavelVidaBase();
+            DropavelVidaBase drop1;
             dropavel = drop1.get();
             break;
         }
         case 2: {
-            DropavelMunicao drop2 = DropavelMunicao();
+            DropavelMunicao drop2;
             dropavel = drop2.get();
             break;
         }

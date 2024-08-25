@@ -3,10 +3,18 @@
 
 #include <vector>
 #include "../../impl/Heroi.hpp"
-#include "../../impl/Projetil.hpp"
+#include "../../impl/Projetil.h"
 
 class HeroShooting {
 public:
+    /**
+     * Cria um projetil do heroi
+     * @param shoot
+     * @param heroi
+     * @param projeteis
+     * @param direcao
+     * @param mousePos
+     */
     static void shoot(bool &shoot, Heroi &heroi, std::vector<Projetil> &projeteis, sf::Vector2f &direcao);
 };
 

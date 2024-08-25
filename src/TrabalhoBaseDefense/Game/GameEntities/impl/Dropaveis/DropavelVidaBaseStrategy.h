@@ -6,9 +6,8 @@
 
 class DropavelVidaBaseStrategy : public IDropavelStrategy {
 public:
-    void effectImpl(void* t) override {
-        auto* obj = static_cast<Base*>(t);
-        obj->setVida(obj->getVida() + 10);
+    void effectImpl(Base &base, Heroi &heroi) override {
+        base.setVida(base.getVida() + 30);
     }
 
 };

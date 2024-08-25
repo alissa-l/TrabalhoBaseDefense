@@ -8,6 +8,7 @@
 #include "../GameEntity.h"
 #include "SFML/Audio/SoundBuffer.hpp"
 #include "SFML/Audio/Sound.hpp"
+#include "SFML/Graphics/Texture.hpp"
 
 class Heroi : public GameEntity {
 
@@ -17,8 +18,10 @@ private:
     bool move = false;
     sf::Vector2f heroMousePos;
     sf::RectangleShape colisionBox;
+    sf::Texture texture1;
+    sf::Sprite sprite1;
+    sf::Vector2f posicao;
 public:
-    sf::RectangleShape sprite;
 
     Heroi();
 
@@ -34,7 +37,9 @@ public:
     void load() override;
     void update(sf::RenderWindow &window);
     void draw(sf::RenderWindow &window) override;
-    void shoot();
+
+    sf::Vector2f getPosicao() const;
+    void setPosicao(sf::Vector2f posicao);
 };
 
 

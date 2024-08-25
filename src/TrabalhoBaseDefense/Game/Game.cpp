@@ -5,7 +5,7 @@
 #include "GameEntities/GameEntity.h"
 #include "GameEntities/impl/Heroi.hpp"
 #include "GameEntities/impl/Inimigo.h"
-#include "GameEntities/impl/Projetil.hpp"
+#include "GameEntities/impl/Projetil.h"
 #include "SFML/Window/Event.hpp"
 #include "GameEntities/Actions/Shooting/HeroShooting.h"
 #include "../Util/VectorUtils.hpp"
@@ -24,6 +24,10 @@
 #include "GameEntities/impl/Dropavel.h"
 #include "GameEntities/Actions/Spawning/DropavelSpawn.h"
 #include "GameUtils/GameEnemyUtils.h"
+#include "GameEntities/impl/Dropaveis/DropavelContext.hpp"
+#include "Telas/TelaGameOver.h"
+#include "../Util/FileUtils.h"
+#include "SFML/Audio/Music.hpp"
 
 //Variaveis do jogo
 /**
@@ -40,11 +44,6 @@ std::vector<Inimigo> inimigosSpawn;
  * Inimigos
  */
 std::vector<Inimigo> inimigos;
-
-/**
- * Base
- */
-Base base;
 
 /**
  * Projeteis
@@ -107,7 +106,20 @@ std::map<std::string, double> enemyVars;
  */
 Logger logger = Logger(Variables().logFile, Variables().logLevel);
 
+/**
+ * Dropaveis
+ */
 std::vector<Dropavel> dropaveis;
+
+/**
+ * Pause
+ */
+int lastPause;
+
+/**
+ * Base
+ */
+Base base;
 
 /**
  * Setup do jogo
@@ -126,12 +138,17 @@ void Game::setup() {
 
     try {
         loadEnemies();
+
+        for(auto &inimigo : inimigosSpawn) {
+            inimigo.load();
+        }
     } catch (std::exception &e) {
         std::string s = e.what();
         throw std::runtime_error("Erro ao carregar os inimigos: " + s);
     }
 
     base.load();
+
 }
 
 /**
@@ -170,6 +187,23 @@ void Game::run() {
         logger.log(LogLevel::ERROR, "Erro abrindo tela de menu " + se);
     }
 
+    for (int i = 0; i < dificuldade * 2; ++i) {
+        increaseDifficulty();
+    }
+
+    sf::Music music;
+    music.openFromFile("resources/BossMain.wav");
+    music.setLoop(true);
+    music.play();
+
+    sf::Texture mapa;
+    if (!mapa.loadFromFile("resources/sprites/MAPA.png")) {
+        throw std::runtime_error("Erro ao carregar o mapa");
+    }
+
+    window.setKeyRepeatEnabled(false);
+    lastPause = 0;
+
     //
     // Loop principal
     //
@@ -178,12 +212,14 @@ void Game::run() {
         frame_count++;
         heroDamageReset--;
         baseDamageReset--;
+        lastPause--;
 
         // Eventos
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+                music.stop();
             }
 
             if (event.type == sf::Event::KeyPressed) {
@@ -192,17 +228,65 @@ void Game::run() {
                     projMousePos = sf::Vector2f(sf::Mouse::getPosition(window));
                 }
             }
+
+
         }
 
-//        if (base.getVida() <= 0) {
-//            window.close();
-//            // TODO: Implementar tela de game over
-//        }
-//
-//        if (herois[0].getVida() <= 0) {
-//            window.close();
-//            // TODO: Implementar tela de game over
-//        }
+        // Sistema de pause
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && lastPause <= 0) {
+            bool pausado = true;
+            logger.log(LogLevel::INFO, "Jogo pausado");
+            lastPause = 100;
+            while (pausado) {
+                sf::Event event{};
+                while (window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed) {
+                        music.stop();
+                        window.close();
+                    }
+
+                    if (event.type == sf::Event::KeyPressed) {
+                        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                            pausado = false;
+                            logger.log(LogLevel::INFO, "Jogo despausado");
+                            break;
+                        }
+                    }
+                }
+                sf::Text text;
+                sf::Font font;
+                font = FileUtils::getFont();
+                text.setFont(font);
+                text.setString("Jogo pausado");
+                text.setCharacterSize(50);
+                text.setFillColor(sf::Color::Red);
+                sf::FloatRect textRect = text.getLocalBounds();
+                text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+                unsigned int sizeXInt = window.getSize().x / 2;
+                auto sizeXFloat = static_cast<float>(sizeXInt);
+                unsigned int sizeYInt = window.getSize().y / 2;
+                auto sizeYFloat = static_cast<float>(sizeYInt);
+
+                text.setPosition(sf::Vector2f(sizeXFloat, sizeYFloat));
+
+                sf::Sprite mapaSprite;
+                mapaSprite.setTexture(mapa);
+                window.draw(mapaSprite);
+
+                drawText(window);
+                window.draw(text);
+
+                draw(window);
+            }
+        }
+
+
+
+        if (base.getVida() <= 0 || herois[0].getVida() <= 0) {
+            logger.log(LogLevel::INFO, "Game over");
+            music.stop();
+            TelaGameOver::gameOverScreen(window);
+        }
 
         window.clear(sf::Color::White);
 
@@ -217,8 +301,16 @@ void Game::run() {
 
         // Desenhar tudo na tela
         try {
-            draw(window);
+
+            sf::Sprite mapaSprite;
+            mapaSprite.setTexture(mapa);
+            window.draw(mapaSprite);
             drawText(window);
+
+
+            draw(window);
+
+
         } catch (std::exception &e) {
             std::string s = e.what();
             logger.log(LogLevel::ERROR, "Erro ao desenhar o jogo: " + s);
@@ -244,6 +336,13 @@ void Game::update(sf::RenderWindow &window) {
 
     // Update do round
     updateRounds();
+
+    // Update dos drops
+    for (auto &dropavel: dropaveis) {
+        dropavel.update();
+    }
+
+    base.update();
 
     calculateColisions();
 }
@@ -282,12 +381,14 @@ void Game::drawText(sf::RenderWindow &window) {
             "\nRound: " + std::to_string(round_c) + "\nVida da Base: " + std::to_string(base.getVida());
 
     texto.setString(text);
-    texto.setCharacterSize(24);
+    texto.setCharacterSize(30);
+    texto.setOutlineThickness(0.6f);
+    texto.setOutlineColor(sf::Color::White);
 
     texto.setStyle(sf::Text::Bold);
 
     texto.setFillColor(sf::Color::Black);
-    texto.setPosition(WindowConstants().tamX - 240, 20);
+    texto.setPosition(WindowConstants().tamX - 260, 20);
 
     texto.setFont(font);
     window.draw(texto);
@@ -324,12 +425,12 @@ void Game::calculateColisions() {
 
     }
 
-    // Colisao projetil inimigo x base
+    // Colisao projetil inimigo x baseShape
     for(auto &proj : projeteis) {
         if (proj.getFriendly()) continue;
         if (Colisoes::colide(proj, base)) {
             proj.setJaColidiu(true);
-            std::string si = "Projetil atingiu a base";
+            std::string si = "Projetil atingiu a baseShape";
             logger.log(LogLevel::DEBUG, si);
 
             if (baseDamageReset > 0) continue;
@@ -351,13 +452,13 @@ void Game::calculateColisions() {
         }
     }
 
-    // Colisao inimigo x base
+    // Colisao inimigo x baseShape
     for(auto &inimigo : inimigos) {
         if (Colisoes::colide(inimigo, base)) {
 
             // Posicoes e tamanhos das entidades pros calculos
             sf::Vector2f basePos = base.getBase().getPosition();
-            sf::Vector2f baseSize = base.getBase().getSize();
+            sf::Vector2f baseSize = sf::Vector2f(Variables().baseTamX, Variables().baseTamY);
             sf::Vector2f inimigoPos = inimigo.getPosicao();
 
             // Verifica qual borda o inimigo está tocando
@@ -379,6 +480,18 @@ void Game::calculateColisions() {
         } else {
             inimigo.setStopMovingX(false);
             inimigo.setStopMovingY(false);
+        }
+    }
+
+    // Dropaveis x heroi
+    for (int i = 0; i < dropaveis.size(); ++i) {
+        for (auto &heroi : herois) {
+            if (Colisoes::colide(heroi, dropaveis[i])) {
+                DropavelContext::applyEffect(heroi, base, dropaveis[i]);
+                dropaveis.erase(dropaveis.begin() + i);
+                --i;
+                break;
+            }
         }
     }
 
@@ -483,7 +596,7 @@ void Game::updateInimigos() {
 
     /**
      * Spawna projeteis dos inimigos <br>
-     * Atira em direção a base
+     * Atira em direção a baseShape
      */
     double shootingFrequency = enemyVars["shootingFrequency"];
     GameEnemyUtils::tiroInimigos(inimigos, projeteis, m_clock, shootingFrequency, base);
@@ -499,17 +612,20 @@ void Game::updateInimigos() {
  * Move os projeteis e verifica se ja sairam da tela
  */
 void Game::updateProjetil() {
+
+    for (auto &proj : projeteis) {
+        proj.update();
+    }
+
     for (int i = 0; i < projeteis.size(); i++) {
 
         try {
             Projetil projetil = projeteis[i];
 
-            projetil.update();
-
-            if (projetil.getProjetil().getPosition().x < 0 ||
-                projetil.getProjetil().getPosition().x > WindowConstants().tamX ||
-                projetil.getProjetil().getPosition().y < 0 ||
-                projetil.getProjetil().getPosition().y > WindowConstants().tamY) {
+            if (projetil.getCollisionBox().getPosition().x < 0 ||
+                projetil.getCollisionBox().getPosition().x > WindowConstants().tamX ||
+                projetil.getCollisionBox().getPosition().y < 0 ||
+                projetil.getCollisionBox().getPosition().y > WindowConstants().tamY) {
 
                 projeteis.erase(projeteis.begin() + i);
             } else {

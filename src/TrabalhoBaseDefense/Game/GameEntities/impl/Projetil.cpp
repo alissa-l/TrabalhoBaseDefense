@@ -1,19 +1,13 @@
-#include "Projetil.hpp"
+#include "Projetil.h"
 #include "../../Variables/Variables.h"
 
 #include <utility>
 #include <iostream>
+#include <cmath>
+#include <valarray>
 
 Projetil::Projetil() {
     friendly = false;
-}
-
-sf::RectangleShape Projetil::getProjetil() {
-    return this->projetil;
-}
-
-void Projetil::setProjetil(sf::RectangleShape proj) {
-    this->projetil = proj;
 }
 
 sf::Vector2f Projetil::getDirecao() {
@@ -25,28 +19,38 @@ void Projetil::setDirecao(sf::Vector2f dir) {
 }
 
 void Projetil::load() {
-
+    if (!this->texture.loadFromFile(this->spritePath)) {
+        std::cout << "Erro ao carregar textura do projetil" << std::endl;
+    }
+    sprite.setTexture(texture);
+    sprite.setScale(1.4f, 1.4f);
+    sprite.setPosition(posicao);
+    collisionBox.setPosition(posicao);
 }
 
 void Projetil::draw(sf::RenderWindow &window) {
-    window.draw(this->projetil);
+    window.draw(this->sprite);
 }
 
 void Projetil::update() {
 
-    sf::RectangleShape newProj = projetil;
-    newProj = move(newProj);
+    if (!this->texture.loadFromFile(this->spritePath)) {
+        std::cout << "Erro ao carregar textura do projetil" << std::endl;
+    }
+    this->sprite.setTexture(this->texture);
+    this->sprite.setScale(1.4f, 1.4f);
+    this->sprite.setRotation(this->rotacao);
+
+    this->posicao = posicao + this->direcao * Variables().projectileSpeed;
+    collisionBox.setPosition(posicao);
+
+    this->sprite.setRotation(rotacao);
 
 
-    projetil.setPosition(newProj.getPosition());
+    sprite.setPosition(posicao);
 
-}
 
-sf::RectangleShape Projetil::move(sf::RectangleShape &proj) {
 
-    proj.setPosition(proj.getPosition() + this->direcao * Variables().projectileSpeed);
-
-    return proj;
 }
 
 bool Projetil::getFriendly() {
@@ -63,4 +67,52 @@ bool Projetil::getJaColidiu() {
 
 void Projetil::setJaColidiu(bool jaColidiu1) {
     jaColidiu = jaColidiu1;
+}
+
+sf::Sprite Projetil::getSprite() const {
+    return this->sprite;
+}
+
+void Projetil::setSprite(sf::Sprite sprite1) {
+    this->sprite = sprite1;
+}
+
+sf::Texture Projetil::getTexture() const {
+    return this->texture;
+}
+
+void Projetil::setTexture(sf::Texture texture1) {
+    this->texture = texture1;
+}
+
+sf::RectangleShape Projetil::getCollisionBox() const {
+    return this->collisionBox;
+}
+
+void Projetil::setCollisionBox(sf::RectangleShape collisionBox1) {
+    this->collisionBox = collisionBox1;
+}
+
+std::string Projetil::getSpritePath() const {
+    return this->spritePath;
+}
+
+void Projetil::setSpritePath(std::string spritePath1) {
+    this->spritePath = spritePath1;
+}
+
+sf::Vector2f Projetil::getPosicao() {
+    return this->posicao;
+}
+
+void Projetil::setPosicao(sf::Vector2f posicao) {
+    this->posicao = posicao;
+}
+
+float Projetil::getRotacao() {
+    return this->rotacao;
+}
+
+void Projetil::setRotacao(float rotacao1) {
+    this->rotacao = rotacao1;
 }

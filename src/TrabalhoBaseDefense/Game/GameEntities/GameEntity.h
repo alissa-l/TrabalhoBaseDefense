@@ -5,7 +5,7 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 
 /**
- * Classe base para entidades do jogo
+ * Classe baseShape para entidades do jogo
  * Métodos virtuais para carregar, desenhar e atualizar a entidade
  */
 class GameEntity {

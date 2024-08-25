@@ -14,24 +14,26 @@ Inimigo::Inimigo() {
  * @param dano1
  * @param colisionBoxSize
  */
-Inimigo::Inimigo(sf::RectangleShape shape1, int vida1, float velocidade1, int dano1, sf::Vector2f colisionBoxSize,
-                 std::string nome1, double chanceSpawn1) {
-    inimigoShape = shape1;
+Inimigo::Inimigo(int vida1, float velocidade1, int dano1, sf::Vector2f colisionBoxSize, std::string nome1,
+                 double chanceSpawn1, std::string spritePath1) {
     Inimigo::vida = vida1;
     Inimigo::velocidade = velocidade1;
     Inimigo::dano = dano1;
     Inimigo::nome = nome1;
     Inimigo::chanceSpawn = chanceSpawn1;
     colisionBox = sf::RectangleShape(colisionBoxSize);
-    colisionBox.setPosition(inimigoShape.getPosition());
-
+    spritePath = spritePath1;
 }
 
 /**
  * Carrega o inimigo
  */
 void Inimigo::load() {
-
+    sf::IntRect rect = sf::IntRect(0, 0, colisionBox.getSize().x, colisionBox.getSize().y);
+    if(!this->texture.loadFromFile(this->spritePath, rect)){
+        std::cout << "Erro ao carregar textura do inimigo" << std::endl;
+    }
+    this->sprite.setTexture(texture);
 }
 
 /**
@@ -39,7 +41,7 @@ void Inimigo::load() {
  * @param window
  */
 void Inimigo::draw(sf::RenderWindow &window) {
-    window.draw(inimigoShape);
+    window.draw(sprite);
 }
 
 /**
@@ -47,6 +49,17 @@ void Inimigo::draw(sf::RenderWindow &window) {
  * Atualiza a posicao do inimigo
  */
 void Inimigo::update() {
+
+    sf::IntRect rect = sf::IntRect(0, 0, colisionBox.getSize().x, colisionBox.getSize().y);
+    if(!this->texture.loadFromFile(this->spritePath, rect)){
+        std::cout << "Erro ao carregar textura do inimigo" << std::endl;
+    }
+    this->sprite.setTexture(texture);
+    if(sprite.getGlobalBounds().width < colisionBox.getSize().x) {
+        float factorX = (colisionBox.getSize().x / sprite.getGlobalBounds().width) + 0.1f;
+        float factorY = (colisionBox.getSize().y / sprite.getGlobalBounds().height) + 0.1f;
+        sprite.setScale(factorX, factorY);
+    }
 
     sf::Vector2f newDirecao = sf::Vector2f(direcao.x, direcao.y);
 
@@ -64,19 +77,19 @@ void Inimigo::update() {
 
     setPosicao(newPos);
 
-    inimigoShape.setPosition(posicao);
+    sprite.setPosition(posicao);
     colisionBox.setPosition(posicao);
 
 }
 
 /**
- * Atualiza a direção do inimigo com base no heroi mais proximo
+ * Atualiza a direção do inimigo com baseShape no heroi mais proximo
  * @param herois
  */
 void Inimigo::updateDirecao(std::vector<Heroi> &herois) {
     std::vector<sf::Vector2f> posHerois;
     for (auto &heroi: herois) {
-        posHerois.push_back(heroi.sprite.getPosition());
+        posHerois.push_back(heroi.getPosicao());
     }
     VectorUtils::sortVectorByDistance(posicao, posHerois);
 
@@ -166,3 +179,4 @@ int Inimigo::getLastShot() const {
 void Inimigo::setLastShot(int lastShot1) {
     this->lastShot = lastShot1;
 }
+

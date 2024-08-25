@@ -4,7 +4,7 @@
 
 #include <vector>
 #include "../../impl/Inimigo.h"
-#include "../../impl/Projetil.hpp"
+#include "../../impl/Projetil.h"
 
 /**
  * Classe que representa a ação de atirar do heroi<br>

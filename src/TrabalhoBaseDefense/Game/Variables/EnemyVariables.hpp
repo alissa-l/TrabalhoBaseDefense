@@ -20,7 +20,7 @@ public:
     double inimigoBaseDamage = 10;
     double inimigoBaseLife = 100;
     double baseSpawnRate = 1;
-    double shootingFrequency = 10;
+    double shootingFrequency = 5;
 };
 
 

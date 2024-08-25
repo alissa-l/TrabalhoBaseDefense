@@ -50,7 +50,7 @@ void TelaMenu::menuScreen(sf::RenderWindow &window, Logger &logger, int &dificul
             texto.setStyle(sf::Text::Bold);
             texto.setFont(font);
 
-            // Centrailizar textto
+            // Centrailizar texto
             sf::FloatRect textRect = texto.getLocalBounds();
             texto.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
             unsigned int sizeXInt = window.getSize().x / 2;
@@ -96,20 +96,6 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
         float startX = (windowWidth - totalWidth) / 2.0f;
         float yPos = windowHeight / 2.0f;
 
-        // Vetor de textos
-        std::vector<sf::Text> textos(3);
-        textos[0].setString("Fácil");
-        textos[1].setString("Médio");
-        textos[2].setString("Difícil");
-
-        sf::Font font = FileUtils::getFont();
-        for (auto &texto: textos) {
-            texto.setCharacterSize(20);
-            texto.setFillColor(sf::Color::Black);
-            texto.setStyle(sf::Text::Bold);
-            texto.setFont(font);
-        }
-
         // Retângulos
         sf::RectangleShape dificuldadeFacil(sf::Vector2f(rectWidth, rectHeight));
         dificuldadeFacil.setFillColor(sf::Color::Green);
@@ -132,8 +118,22 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
                 logger.log(LogLevel::INFO, "Jogo encerrado - menu");
             }
 
-            if (event.type == sf::Event::KeyPressed) {
-                logger.log(LogLevel::INFO, "Dificuldade escolhida - menu");
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+                if(dificuldadeFacil.getGlobalBounds().contains(mousePos)){
+                    dificuldade = 0;
+                    return;
+                } else if (dificuldadeMediana.getGlobalBounds().contains(mousePos)){
+                    dificuldade = 1;
+                    return;
+                } else if (dificuldadeDificil.getGlobalBounds().contains(mousePos)){
+                    dificuldade = 2;
+                    return;
+                }
+
+                std::string si = std::to_string(dificuldade);
+                logger.log(LogLevel::INFO, "Dificuldade escolhida: " + si + " - menu");
                 return;
             }
 
@@ -141,10 +141,10 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
         window.clear(sf::Color::White);
 
 
-        sf::Font font2 = FileUtils::getFont();
+        sf::Font font = FileUtils::getFont();
 
         //
-        // Textos do menu
+        // Textos da tela
         //
         sf::Text texto;
 
@@ -157,7 +157,7 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
         texto.setStyle(sf::Text::Bold);
         texto.setFont(font);
 
-        // Centrailizar textto
+        // Centrailizar texto
         sf::FloatRect textRect = texto.getLocalBounds();
         texto.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
         unsigned int sizeXInt = window.getSize().x / 2;
@@ -170,6 +170,27 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
         // Ajustar a posição do titulo por um offset de Y
         texto.move(0, -125);
 
+        // Vetor de textos das dificuldades
+        std::vector<sf::Text> textos(3);
+        textos[0].setString("Facil");
+        textos[1].setString("Medio");
+        textos[2].setString("Dificil");
+
+        for (int i = 0; i < textos.size(); ++i) {
+            textos[i].setCharacterSize(20);
+            textos[i].setFillColor(sf::Color::Black);
+            textos[i].setStyle(sf::Text::Bold);
+            textos[i].setFont(font);
+
+            // Centralizar texto dentro do retângulo
+            sf::FloatRect textRect = textos[i].getLocalBounds();
+            textos[i].setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+            textos[i].setPosition(
+                    startX + i * (rectWidth + spacing) + rectWidth / 2.0f,
+                    yPos + rectHeight / 2.0f
+            );
+        }
+
         // Desenhar os botões
         window.draw(dificuldadeFacil);
         window.draw(dificuldadeMediana);
@@ -177,6 +198,10 @@ void TelaMenu::selectDificuldade(sf::RenderWindow &window, Logger &logger, int &
 
         // Desenhar os textos
         window.draw(texto);
+
+        for (const auto &texto: textos) {
+            window.draw(texto);
+        }
 
         // Display
         window.display();

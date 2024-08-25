@@ -22,6 +22,12 @@ public:
      * Vida do herói
      */
     int heroiVida = 100;
+
+    /**
+     * Textura 1 do herói
+     */
+    std::string heroiTexture1 = "resources/sprites/arqueiro_1.png";
+
 };
 
 #endif //SRC_TRABALHOBASEDEFENSEEXE_HEROVARIABLES_H
