@@ -1,5 +1,23 @@
 # Trabalho Base Defense
 
+# Componentes:
+Alissa de Lima Araújo
+Fagner Irineu de Medeiros
+Filipe de Medeiros Alves
+Pedro Lucas de Souza Martins
+
+# Compilar e rodar:
+```bash
+cmake .
+make
+./TrabalhoBaseDefenseEXE
+```
+
+# Recursos extras implementados
+- Níveis de dificuldade
+- Tipos de inimigos
+- Pause
+
 ## Listagem de diretórios
 1. classes
     1. heroi.cpp
