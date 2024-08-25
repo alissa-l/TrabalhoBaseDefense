@@ -8,7 +8,7 @@
 
 class Base : public GameEntity {
 private:
-    sf::RectangleShape baseShape;
+    sf::RectangleShape base;
 
     int vida{};
 public:

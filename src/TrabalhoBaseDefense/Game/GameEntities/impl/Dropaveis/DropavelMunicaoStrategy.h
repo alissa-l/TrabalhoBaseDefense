@@ -9,7 +9,7 @@
 class DropavelMunicaoStrategy : public IDropavelStrategy {
 public:
     void effectImpl(Base &base, Heroi &heroi) override {
-        heroi.setMunicao(heroi.getMunicao() + 2);
+        heroi.setMunicao(heroi.getMunicao() + 10);
     }
 };
 

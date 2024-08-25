@@ -42,6 +42,7 @@ public:
      * @return
      */
     static void sortVectorByDistance(sf::Vector2f origem, std::vector<sf::Vector2f> &vetor);
+
 };
 
 

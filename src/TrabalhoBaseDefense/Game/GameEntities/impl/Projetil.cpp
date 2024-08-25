@@ -3,6 +3,8 @@
 
 #include <utility>
 #include <iostream>
+#include <cmath>
+#include <valarray>
 
 Projetil::Projetil() {
     friendly = false;
@@ -21,27 +23,33 @@ void Projetil::load() {
         std::cout << "Erro ao carregar textura do projetil" << std::endl;
     }
     sprite.setTexture(texture);
+    sprite.setScale(1.4f, 1.4f);
     sprite.setPosition(posicao);
     collisionBox.setPosition(posicao);
 }
 
 void Projetil::draw(sf::RenderWindow &window) {
     window.draw(this->sprite);
-    window.draw(this->collisionBox);
 }
 
 void Projetil::update() {
 
-    this->collisionBox.setOutlineThickness(1);
-    this->collisionBox.setOutlineColor(sf::Color::Red);
     if (!this->texture.loadFromFile(this->spritePath)) {
         std::cout << "Erro ao carregar textura do projetil" << std::endl;
     }
     this->sprite.setTexture(this->texture);
+    this->sprite.setScale(1.4f, 1.4f);
+    this->sprite.setRotation(this->rotacao);
 
-    sf::Vector2f newPos = sprite.getPosition() + this->direcao * Variables().projectileSpeed;
-    this->sprite.setPosition(newPos);
-    collisionBox.setPosition(newPos);
+    this->posicao = posicao + this->direcao * Variables().projectileSpeed;
+    collisionBox.setPosition(posicao);
+
+    this->sprite.setRotation(rotacao);
+
+
+    sprite.setPosition(posicao);
+
+
 
 }
 
@@ -99,4 +107,12 @@ sf::Vector2f Projetil::getPosicao() {
 
 void Projetil::setPosicao(sf::Vector2f posicao) {
     this->posicao = posicao;
+}
+
+float Projetil::getRotacao() {
+    return this->rotacao;
+}
+
+void Projetil::setRotacao(float rotacao1) {
+    this->rotacao = rotacao1;
 }

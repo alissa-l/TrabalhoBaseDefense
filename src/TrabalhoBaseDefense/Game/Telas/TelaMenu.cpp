@@ -50,7 +50,7 @@ void TelaMenu::menuScreen(sf::RenderWindow &window, Logger &logger, int &dificul
             texto.setStyle(sf::Text::Bold);
             texto.setFont(font);
 
-            // Centrailizar textto
+            // Centrailizar texto
             sf::FloatRect textRect = texto.getLocalBounds();
             texto.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
             unsigned int sizeXInt = window.getSize().x / 2;

@@ -12,6 +12,7 @@ class Projetil : public GameEntity {
 private:
     sf::Vector2f posicao;
     sf::Vector2f direcao;
+    float rotacao;
     bool friendly;
     bool jaColidiu = false;
     sf::Sprite sprite;
@@ -26,6 +27,9 @@ public:
 
     sf::Vector2f getDirecao();
     void setDirecao(sf::Vector2f dir);
+
+    float getRotacao();
+    void setRotacao(float rotacao1);
 
     bool getFriendly();
     void setFriendly(bool friendly1);

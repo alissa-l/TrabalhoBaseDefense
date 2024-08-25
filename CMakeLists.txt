@@ -74,6 +74,7 @@ add_executable(TrabalhoBaseDefenseEXE src/TrabalhoBaseDefense/TrabalhoBaseDefens
         src/TrabalhoBaseDefense/Util/FileUtils.h
 )
 target_link_libraries(TrabalhoBaseDefenseEXE PRIVATE sfml-graphics)
+target_link_libraries(TrabalhoBaseDefenseEXE PRIVATE sfml-audio)
 target_compile_features(TrabalhoBaseDefenseEXE PRIVATE cxx_std_17)
 
 file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})

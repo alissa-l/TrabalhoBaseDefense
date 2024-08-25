@@ -7,7 +7,7 @@
 class DropavelVidaBaseStrategy : public IDropavelStrategy {
 public:
     void effectImpl(Base &base, Heroi &heroi) override {
-        base.setVida(base.getVida() + 20);
+        base.setVida(base.getVida() + 30);
     }
 
 };

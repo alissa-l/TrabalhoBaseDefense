@@ -58,7 +58,7 @@ void GameEnemyUtils::tiroInimigos(std::vector<Inimigo> &inimigos, std::vector<Pr
         if (canShoot) {
             i.setLastShot(clock.getElapsedTime().asSeconds());
             sf::Vector2f basePos = base.getBase().getPosition();
-            sf::Vector2f baseSize = base.getBase().getSize();
+            sf::Vector2f baseSize = base.getBase().getLocalBounds().getSize();
             sf::Vector2f centroBase = sf::Vector2f(basePos.x + baseSize.x / 2, basePos.y + baseSize.y / 2);
             sf::Vector2f direcao = VectorUtils::calcularDirecao(i.getPosicao(), centroBase);
             EnemyShooting::shoot(i, projeteis, direcao);
