@@ -2,16 +2,33 @@
 
 # Componentes:
 Alissa de Lima Araújo
+
 Fagner Irineu de Medeiros
+
 Filipe de Medeiros Alves
+
 Pedro Lucas de Souza Martins
 
-# Compilar e rodar:
+# Compilar e rodar (Debian):
 ```bash
+sudo apt install libsfml-dev
+sudo apt install \
+    libxrandr-dev \
+    libxcursor-dev \
+    libudev-dev \
+    libopenal-dev \
+    libflac-dev \
+    libvorbis-dev \
+    libgl1-mesa-dev \
+    libegl1-mesa-dev \
+    libdrm-dev \
+    libgbm-dev \
+sudo apt install cmake
 cmake .
 make
 ./TrabalhoBaseDefenseEXE
 ```
+
 
 # Recursos extras implementados
 - Níveis de dificuldade
